@@ -1,14 +1,48 @@
-# bus-tool
+# Lost Ark Bus Tool
 
-## React + Vite
+Una herramienta para calcular automáticamente los precios y distribución de oro para buses (carries) en Lost Ark.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Características
 
-Currently, two official plugins are available:
+- Selección de raid (Echidna, Kakul-Saydon, etc.)
+- Cálculo automático de la cantidad de buyers basado en la raid seleccionada y el número de drivers
+- Cálculo del precio a listar para cada buyer para una distribución equitativa del oro
+- Interfaz de usuario intuitiva y fácil de usar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologías
 
-## Expanding the ESLint configuration
+- React 19
+- Vite
+- Tailwind CSS
+- React Router
+- Formik y Yup para manejo de formularios
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Instalación
+
+```bash
+# Clonar el repositorio
+git clone [url-del-repositorio]
+
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
+npm run dev
+```
+
+## Uso
+
+1. Selecciona la raid que vas a bussear
+2. Indica el número de drivers
+3. Establece el precio total del bus
+4. La herramienta calculará automáticamente cuánto oro debe listar cada buyer
+
+## Desarrollo
+
+Este proyecto fue creado con Vite y React. Para contribuir:
+
+1. Haz un fork del repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/amazing-feature`)
+3. Haz commit de tus cambios (`git commit -m 'Add some amazing feature'`)
+4. Push a la rama (`git push origin feature/amazing-feature`)
+5. Abre un Pull Request
