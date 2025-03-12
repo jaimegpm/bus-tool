@@ -1,5 +1,13 @@
 // Importar la utilidad para rutas de assets
-import { getAssetUrl } from '../utils/assetUtils';
+import { getAssetUrl, getOptimizedImageUrl } from '../utils/assetUtils';
+
+// Función para obtener la URL de imagen de raid optimizada
+const getRaidImageUrl = (imagePath) => {
+  // Durante el desarrollo, usar las imágenes originales hasta que se ejecute el script de optimización
+  // Una vez ejecutado el script de optimización, cambiar a true
+  const useOptimized = true; 
+  return getOptimizedImageUrl(imagePath, 'md', useOptimized);
+};
 
 export const raids = [
   {
@@ -8,7 +16,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Echidna.webp'),
+    image: getRaidImageUrl('images/raids/Echidna.webp'),
   },
   {
     id: 'kakul',
@@ -16,7 +24,7 @@ export const raids = [
     totalPlayers: 4,
     difficulty: 'Normal',
     availableDifficulties: ['Normal'],
-    image: getAssetUrl('images/raids/Kakul.webp'),
+    image: getRaidImageUrl('images/raids/Kakul.webp'),
   },
   {
     id: 'brelshaza-act2',
@@ -24,7 +32,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Brelshaza.webp'),
+    image: getRaidImageUrl('images/raids/Brelshaza.webp'),
   },
   {
     id: 'akkan',
@@ -32,7 +40,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Akkan.webp'),
+    image: getRaidImageUrl('images/raids/Akkan.webp'),
   },
   {
     id: 'kayangel',
@@ -40,7 +48,7 @@ export const raids = [
     totalPlayers: 4,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Kayangel.webp'),
+    image: getRaidImageUrl('images/raids/Kayangel.webp'),
   },
   {
     id: 'thaemine',
@@ -48,7 +56,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Thaemine.webp'),
+    image: getRaidImageUrl('images/raids/Thaemine.webp'),
   },
   {
     id: 'valtan',
@@ -56,7 +64,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Valtan.webp'),
+    image: getRaidImageUrl('images/raids/Valtan.webp'),
   },
   {
     id: 'vykas',
@@ -64,7 +72,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Vykas.webp'),
+    image: getRaidImageUrl('images/raids/Vykas.webp'),
   },
   {
     id: 'behemoth',
@@ -72,7 +80,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Normal',
     availableDifficulties: ['Normal'],
-    image: getAssetUrl('images/raids/Behemoth.webp'),
+    image: getRaidImageUrl('images/raids/Behemoth.webp'),
   },
   {
     id: 'voldis',
@@ -80,7 +88,7 @@ export const raids = [
     totalPlayers: 4,
     difficulty: 'Normal',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Voldis.webp'),
+    image: getRaidImageUrl('images/raids/Voldis.webp'),
   },
   {
     id: 'aegir',
@@ -88,7 +96,7 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Normal',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Aegir.webp'),
+    image: getRaidImageUrl('images/raids/Aegir.webp'),
   },
   {
     id: 'brelshaza',
@@ -96,6 +104,6 @@ export const raids = [
     totalPlayers: 8,
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
-    image: getAssetUrl('images/raids/Brelshaza1.webp'),
+    image: getRaidImageUrl('images/raids/Brelshaza1.webp'),
   },
 ]; 

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { raids } from '../data/raids';
 import BusConfig from '../components/BusConfig';
+import OptimizedImage from '../components/OptimizedImage';
 import '../components/PixelCanvas.css';
 
 export default function BusConfigPage() {
@@ -120,9 +121,11 @@ export default function BusConfigPage() {
         <div className="flex items-start space-x-6 mb-4">
           <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center shadow-md animate-float shrink-0">
             {raid.image && !imageError ? (
-              <img 
+              <OptimizedImage 
                 src={raid.image} 
-                alt={raid.name} 
+                alt={raid.name}
+                width={96}
+                height={96}
                 className="w-full h-full object-cover transition-all duration-500 hover:scale-110"
                 onError={handleImageError}
               />

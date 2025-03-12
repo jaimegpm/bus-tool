@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAssetUrl } from '../utils/assetUtils';
+import { getAssetUrl, getOptimizedImageUrl } from '../utils/assetUtils';
 
 export default function BusConfig({ raid, onConfigChange }) {
   const [drivers, setDrivers] = useState(1);
@@ -9,8 +9,8 @@ export default function BusConfig({ raid, onConfigChange }) {
   const [animateResult, setAnimateResult] = useState(false);
   const [goldDistribution, setGoldDistribution] = useState([]);
   
-  // Ruta del icono de oro
-  const goldIconUrl = getAssetUrl('images/icons/gold.webp');
+  // Ruta del icono de oro (usando versión optimizada)
+  const goldIconUrl = getOptimizedImageUrl('images/icons/gold.webp', 'sm', true);
   
   const maxDrivers = raid ? raid.totalPlayers - 1 : 0;
   const buyers = raid ? raid.totalPlayers - drivers : 0;

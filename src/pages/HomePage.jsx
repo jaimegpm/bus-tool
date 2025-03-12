@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { raids } from '../data/raids';
+import OptimizedImage from '../components/OptimizedImage';
 import '../components/PixelCanvas.css';
 
 export default function HomePage() {
@@ -108,15 +109,14 @@ export default function HomePage() {
                   hoveredRaid === raid.id ? 'animate-float shadow-md' : 'shadow-sm'
                 } transition-shadow duration-300`}>
                   {raid.image ? (
-                    <img 
+                    <OptimizedImage 
                       src={raid.image} 
-                      alt={raid.name} 
-                      className={`w-full h-full object-cover transition-all duration-500 ${
-                        hoveredRaid === raid.id ? 'scale-110 brightness-110' : 'scale-100'
-                      }`}
+                      alt={raid.name}
+                      width={256}
+                      height={256}
+                      className="w-full h-full object-cover transition-all duration-500"
+                      hovered={hoveredRaid === raid.id}
                       onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '';
                         e.target.parentNode.innerHTML = `<span class="text-3xl font-bold text-gray-500 dark:text-gray-400">${raid.name.charAt(0)}</span>`;
                       }}
                     />
@@ -166,13 +166,13 @@ export default function HomePage() {
             <div className="flex items-center mb-6">
               {selectedRaid.image && (
                 <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mr-4">
-                  <img 
+                  <OptimizedImage 
                     src={selectedRaid.image} 
-                    alt={selectedRaid.name} 
+                    alt={selectedRaid.name}
+                    width={64}
+                    height={64}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '';
                       e.target.parentNode.innerHTML = `<span class="text-2xl font-bold text-gray-500 dark:text-gray-400">${selectedRaid.name.charAt(0)}</span>`;
                     }}
                   />
