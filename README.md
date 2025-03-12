@@ -1,48 +1,48 @@
 # Lost Ark Bus Tool
 
-Una herramienta para calcular automáticamente los precios y distribución de oro para buses (carries) en Lost Ark.
+A tool to automatically calculate prices and gold distribution for buses (carries) in Lost Ark.
 
-## Características
+## Features
 
-- Selección de raid (Echidna, Kakul-Saydon, etc.)
-- Cálculo automático de la cantidad de buyers basado en la raid seleccionada y el número de drivers
-- Cálculo del precio a listar para cada buyer para una distribución equitativa del oro
-- Interfaz de usuario intuitiva y fácil de usar
+- Raid selection (Echidna, Kakul-Saydon, etc.)
+- Automatic calculation of the number of buyers based on the selected raid and the number of drivers
+- Calculation of the price to list for each buyer for an equitable gold distribution
+- Intuitive and easy-to-use user interface
 
-## Tecnologías
+## Technologies
 
 - React 19
 - Vite
 - Tailwind CSS
 - React Router
-- Formik y Yup para manejo de formularios
+- Formik and Yup for form handling
 
-## Instalación
+## Installation
 
 ```bash
-# Clonar el repositorio
-git clone [url-del-repositorio]
+# Clone the repository
+git clone [repository-url]
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Iniciar servidor de desarrollo
+# Start development server
 npm run dev
 ```
 
-## Uso
+## Usage
 
-1. Selecciona la raid que vas a bussear
-2. Indica el número de drivers
-3. Establece el precio total del bus
-4. La herramienta calculará automáticamente cuánto oro debe listar cada buyer
+1. Select the raid you are going to bus
+2. Indicate the number of drivers
+3. Set the total price of the bus
+4. The tool will automatically calculate how much gold each buyer should list
 
-## Desarrollo
+## Development
 
-Este proyecto fue creado con Vite y React. Para contribuir:
+This project was created with Vite and React. To contribute:
 
-1. Haz un fork del repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/amazing-feature`)
-3. Haz commit de tus cambios (`git commit -m 'Add some amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
+1. Fork the repository
+2. Create a branch for your feature (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
