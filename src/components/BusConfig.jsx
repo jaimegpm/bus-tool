@@ -565,13 +565,93 @@ export default function BusConfig({ raid, onConfigChange }) {
   
   /**
    * Helper function to format gold values
-   * Converts large numbers to k format (e.g., 1000 -> 1k)
+   * Shows exact values with 3 decimal places (e.g., 1000 -> 1,000)
    */
   const formatGold = (value) => {
-    if (value >= 1000) {
-      return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)}k`;
+    return value.toLocaleString('en-US', { 
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  };
+  
+  /**
+   * Helper function to get driver color based on driver number
+   * Returns a consistent color for each driver
+   */
+  const getDriverColor = (driverNumber) => {
+    const colors = {
+      1: { 
+        bg: 'bg-red-100 dark:bg-red-900/30', 
+        text: 'text-red-800 dark:text-red-300',
+        border: 'border border-red-300 dark:border-red-700',
+        shadow: 'shadow-md shadow-red-500/20 dark:shadow-red-500/30',
+        hover: 'hover:shadow-lg hover:shadow-red-500/30 dark:hover:shadow-red-500/40'
+      },
+      2: { 
+        bg: 'bg-blue-100 dark:bg-blue-900/30', 
+        text: 'text-blue-800 dark:text-blue-300',
+        border: 'border border-blue-300 dark:border-blue-700',
+        shadow: 'shadow-md shadow-blue-500/20 dark:shadow-blue-500/30',
+        hover: 'hover:shadow-lg hover:shadow-blue-500/30 dark:hover:shadow-blue-500/40'
+      },
+      3: { 
+        bg: 'bg-green-100 dark:bg-green-900/30', 
+        text: 'text-green-800 dark:text-green-300',
+        border: 'border border-green-300 dark:border-green-700',
+        shadow: 'shadow-md shadow-green-500/20 dark:shadow-green-500/30',
+        hover: 'hover:shadow-lg hover:shadow-green-500/30 dark:hover:shadow-green-500/40'
+      },
+      4: { 
+        bg: 'bg-purple-100 dark:bg-purple-900/30', 
+        text: 'text-purple-800 dark:text-purple-300',
+        border: 'border border-purple-300 dark:border-purple-700',
+        shadow: 'shadow-md shadow-purple-500/20 dark:shadow-purple-500/30',
+        hover: 'hover:shadow-lg hover:shadow-purple-500/30 dark:hover:shadow-purple-500/40'
+      },
+      5: { 
+        bg: 'bg-yellow-100 dark:bg-yellow-900/30', 
+        text: 'text-yellow-800 dark:text-yellow-300',
+        border: 'border border-yellow-300 dark:border-yellow-700',
+        shadow: 'shadow-md shadow-yellow-500/20 dark:shadow-yellow-500/30',
+        hover: 'hover:shadow-lg hover:shadow-yellow-500/30 dark:hover:shadow-yellow-500/40'
+      },
+      6: { 
+        bg: 'bg-indigo-100 dark:bg-indigo-900/30', 
+        text: 'text-indigo-800 dark:text-indigo-300',
+        border: 'border border-indigo-300 dark:border-indigo-700',
+        shadow: 'shadow-md shadow-indigo-500/20 dark:shadow-indigo-500/30',
+        hover: 'hover:shadow-lg hover:shadow-indigo-500/30 dark:hover:shadow-indigo-500/40'
+      },
+      7: { 
+        bg: 'bg-pink-100 dark:bg-pink-900/30', 
+        text: 'text-pink-800 dark:text-pink-300',
+        border: 'border border-pink-300 dark:border-pink-700',
+        shadow: 'shadow-md shadow-pink-500/20 dark:shadow-pink-500/30',
+        hover: 'hover:shadow-lg hover:shadow-pink-500/30 dark:hover:shadow-pink-500/40'
+      }
+    };
+    
+    return colors[driverNumber] || { 
+      bg: 'bg-gray-100 dark:bg-gray-800', 
+      text: 'text-gray-800 dark:text-gray-300',
+      border: 'border border-gray-300 dark:border-gray-700',
+      shadow: 'shadow-md shadow-gray-500/20 dark:shadow-gray-500/30',
+      hover: 'hover:shadow-lg hover:shadow-gray-500/30 dark:hover:shadow-gray-500/40'
+    };
+  };
+  
+  /**
+   * Helper function to get buyer color based on party
+   * Returns a consistent color for each party
+   */
+  const getBuyerPartyIndicator = (buyerText) => {
+    if (buyerText.includes('party 1')) {
+      return { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-800 dark:text-cyan-300' };
+    } else if (buyerText.includes('party 2')) {
+      return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-800 dark:text-amber-300' };
+    } else {
+      return { bg: 'bg-gray-100 dark:bg-gray-800/50', text: 'text-gray-700 dark:text-gray-400' };
     }
-    return value;
   };
   
   if (!raid) return null;
@@ -603,32 +683,37 @@ export default function BusConfig({ raid, onConfigChange }) {
               </svg>
               Number of Drivers
             </label>
-            <div className="flex items-center">
-              <button 
-                className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded-l-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50"
-                onClick={() => drivers > 1 && setDrivers(drivers - 1)}
-                disabled={drivers <= 1}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <input
-                type="text"
-                value={drivers}
-                onChange={handleDriverChange}
-                className="w-16 text-center py-1 border-y border-gray-300 dark:border-gray-600 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <button 
-                className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded-r-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50"
-                onClick={() => drivers < maxDrivers && setDrivers(drivers + 1)}
-                disabled={drivers >= maxDrivers}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <div className="ml-4 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded text-sm text-blue-800 dark:text-blue-300 font-medium animate-pulse-slow">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button 
+                  className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => drivers > 1 && setDrivers(drivers - 1)}
+                  disabled={drivers <= 1}
+                  aria-label="Decrease drivers"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <input
+                  type="text"
+                  value={drivers}
+                  onChange={handleDriverChange}
+                  className="w-16 text-center py-2 border-x border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 text-gray-900 dark:text-gray-100 font-medium"
+                  aria-label="Number of drivers"
+                />
+                <button 
+                  className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => drivers < maxDrivers && setDrivers(drivers + 1)}
+                  disabled={drivers >= maxDrivers}
+                  aria-label="Increase drivers"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div className="px-4 py-2 bg-gradient-to-r from-blue-500/10 to-blue-600/10 dark:from-blue-400/10 dark:to-blue-500/10 rounded-lg text-sm text-blue-800 dark:text-blue-300 font-medium border border-blue-100 dark:border-blue-800/30 shadow-sm">
                 {drivers}c{buyers} ({drivers} drivers, {buyers} buyers)
               </div>
             </div>
@@ -739,30 +824,51 @@ export default function BusConfig({ raid, onConfigChange }) {
               {goldDistribution.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800/30">
                   <h4 className="font-medium text-blue-800 dark:text-blue-300 mb-2">Gold Distribution</h4>
-                  <div className="bg-white/50 dark:bg-gray-800/50 rounded-md p-3">
+                  <div className="bg-white/80 dark:bg-gray-800/80 rounded-md p-4 shadow-sm">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-blue-100 dark:border-blue-900/30">
-                          <th className="text-center py-1 font-medium text-gray-600 dark:text-gray-400">Driver</th>
-                          <th className="text-center py-1 font-medium text-gray-600 dark:text-gray-400">Buyer</th>
-                          <th className="text-center py-1 font-medium text-gray-600 dark:text-gray-400">Gold</th>
+                        <tr>
+                          <th className="w-1/3 text-center py-3 font-semibold text-gray-700 dark:text-gray-300 border-b-2 border-gray-200 dark:border-gray-700">Driver</th>
+                          <th className="w-1/3 text-center py-3 font-semibold text-gray-700 dark:text-gray-300 border-b-2 border-gray-200 dark:border-gray-700">Buyer</th>
+                          <th className="w-1/3 text-center py-3 font-semibold text-gray-700 dark:text-gray-300 border-b-2 border-gray-200 dark:border-gray-700">Gold</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {goldDistribution.map((item, index) => (
-                          <tr key={index} className="border-b border-blue-50 dark:border-blue-900/10 last:border-0">
-                            <td className="py-1 text-center text-blue-800 dark:text-blue-300">d{item.driver}</td>
-                            <td className="py-1 text-center">{item.buyer}</td>
-                            <td className="py-1 flex items-center justify-center">
-                              <img src={goldIconUrl} alt="Gold" className="w-3 h-3 mr-1" />
-                              {item.isGrouped ? (
-                                formatGold(item.gold)
-                              ) : (
-                                formatGold(item.gold)
-                              )}
-                            </td>
-                          </tr>
-                        ))}
+                        {goldDistribution.map((item, index) => {
+                          const driverColor = getDriverColor(item.driver);
+                          return (
+                            <tr key={index} className="hover:bg-gray-50/80 dark:hover:bg-gray-700/50 transition-colors group border-b border-gray-100 dark:border-gray-800">
+                              <td className="py-3 text-center">
+                                <div className="flex justify-center">
+                                  <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full ${driverColor.bg} transition-all duration-300 ${driverColor.text} ${driverColor.border} ${driverColor.shadow} ${driverColor.hover}`}>
+                                    d{item.driver}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="py-3 text-center">
+                                <div className="flex justify-center">
+                                  <span className={`inline-block px-3 py-1.5 rounded-md text-xs font-medium ${driverColor.bg} ${driverColor.text} transition-all duration-300 ${driverColor.border} ${driverColor.shadow} ${driverColor.hover}`}>
+                                    {item.buyer}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="py-3 text-center">
+                                <div className="flex justify-center">
+                                  <span className={`flex items-center px-3 py-1.5 rounded-md ${driverColor.bg} ${driverColor.text} transition-all duration-300 ${driverColor.border} ${driverColor.shadow} ${driverColor.hover}`}>
+                                    <img src={goldIconUrl} alt="Gold" className="w-3.5 h-3.5 mr-1.5" />
+                                    <span className="font-medium">
+                                      {item.isGrouped ? (
+                                        formatGold(item.gold)
+                                      ) : (
+                                        formatGold(item.gold)
+                                      )}
+                                    </span>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
