@@ -1,4 +1,4 @@
-# 🏹 Lost Ark Bus Tool  
+# 🖥️ Lost Ark Bus Tool  
 
 _A tool to automatically calculate prices and gold distribution for buses (carries) in Lost Ark._
 
