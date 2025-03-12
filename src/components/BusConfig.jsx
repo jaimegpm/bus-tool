@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getAssetUrl } from '../utils/assetUtils';
 
 export default function BusConfig({ raid, onConfigChange }) {
   const [drivers, setDrivers] = useState(1);
@@ -7,6 +8,9 @@ export default function BusConfig({ raid, onConfigChange }) {
   const [isCalculating, setIsCalculating] = useState(false);
   const [animateResult, setAnimateResult] = useState(false);
   const [goldDistribution, setGoldDistribution] = useState([]);
+  
+  // Ruta del icono de oro
+  const goldIconUrl = getAssetUrl('images/icons/gold.webp');
   
   const maxDrivers = raid ? raid.totalPlayers - 1 : 0;
   const buyers = raid ? raid.totalPlayers - drivers : 0;
@@ -602,7 +606,7 @@ export default function BusConfig({ raid, onConfigChange }) {
           <div className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg transition-all duration-300 hover:shadow-soft">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
               <div className="w-4 h-4 mr-1 flex-shrink-0">
-                <img src="/images/icons/gold.webp" alt="Gold" className="w-full h-full object-contain" />
+                <img src={goldIconUrl} alt="Gold" className="w-full h-full object-contain" />
               </div>
               Total Bus Price (Gold)
             </label>
@@ -669,7 +673,7 @@ export default function BusConfig({ raid, onConfigChange }) {
                   <div className="bg-blue-600/5 dark:bg-blue-400/5 p-4 rounded-lg flex items-center space-x-3 hover:bg-blue-600/10 dark:hover:bg-blue-400/10 transition-colors border-l-4 border-blue-500 dark:border-blue-400 overflow-hidden relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
                     <div className="h-10 w-10 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center flex-shrink-0">
-                      <img src="/images/icons/gold.webp" alt="Gold" className="h-6 w-6 object-contain" />
+                      <img src={goldIconUrl} alt="Gold" className="h-6 w-6 object-contain" />
                     </div>
                     <div className="flex flex-col">
                       <div className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Price per Buyer</div>
@@ -680,7 +684,7 @@ export default function BusConfig({ raid, onConfigChange }) {
                   <div className="bg-blue-600/5 dark:bg-blue-400/5 p-4 rounded-lg flex items-center space-x-3 hover:bg-blue-600/10 dark:hover:bg-blue-400/10 transition-colors border-l-4 border-blue-500 dark:border-blue-400 overflow-hidden relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
                     <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center flex-shrink-0">
-                      <img src="/images/icons/gold.webp" alt="Gold" className="h-6 w-6 object-contain" />
+                      <img src={goldIconUrl} alt="Gold" className="h-6 w-6 object-contain" />
                     </div>
                     <div className="flex flex-col">
                       <div className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Total Income</div>
@@ -691,7 +695,7 @@ export default function BusConfig({ raid, onConfigChange }) {
                   <div className="bg-blue-600/5 dark:bg-blue-400/5 p-4 rounded-lg flex items-center space-x-3 hover:bg-blue-600/10 dark:hover:bg-blue-400/10 transition-colors border-l-4 border-blue-500 dark:border-blue-400 overflow-hidden relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
                     <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center flex-shrink-0">
-                      <img src="/images/icons/gold.webp" alt="Gold" className="h-6 w-6 object-contain" />
+                      <img src={goldIconUrl} alt="Gold" className="h-6 w-6 object-contain" />
                     </div>
                     <div className="flex flex-col">
                       <div className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">Gold per Driver</div>
@@ -719,7 +723,7 @@ export default function BusConfig({ raid, onConfigChange }) {
                             <td className="py-1 text-center text-blue-800 dark:text-blue-300">d{item.driver}</td>
                             <td className="py-1 text-center">{item.buyer}</td>
                             <td className="py-1 flex items-center justify-center">
-                              <img src="/images/icons/gold.webp" alt="Gold" className="w-3 h-3 mr-1" />
+                              <img src={goldIconUrl} alt="Gold" className="w-3 h-3 mr-1" />
                               {item.isGrouped ? (
                                 formatGold(item.gold)
                               ) : (
