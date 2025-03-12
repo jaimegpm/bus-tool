@@ -1,0 +1,63 @@
+/* Styles for the PixelCanvas component */
+.pixel-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 150ms cubic-bezier(0.5, 1, 0.89, 1);
+  user-select: none;
+}
+
+/* CSS Variables for theming */
+:root {
+  --surface-1: #101012;
+  --surface-2: #27272a;
+  --surface-3: #52525b;
+  --bg: #09090b;
+  --fg: #e3e3e3;
+  --ease-out: cubic-bezier(0.5, 1, 0.89, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.dark {
+  --surface-1: #1a1a1a;
+  --surface-2: #2a2a2a;
+  --surface-3: #3a3a3a;
+  --bg: #121212;
+  --fg: #f5f5f5;
+}
+
+/* Styles for the difficulty button container */
+.difficulty-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+.difficulty-button:hover {
+  transform: translateY(-2px);
+}
+
+.difficulty-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Styles for the button content */
+.difficulty-button-content {
+  position: relative;
+  z-index: 10;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.difficulty-button:active .difficulty-button-content {
+  transform: scale(0.97);
+}
+
+/* Specific shadows for buttons */
+.shadow-pixel-glow-green {
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.7), 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.shadow-pixel-glow-red {
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.7), 0 0 10px rgba(239, 68, 68, 0.4);
+} 
