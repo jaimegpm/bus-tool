@@ -1,14 +1,30 @@
-// Importar la utilidad para rutas de assets
+// Import asset utility functions
 import { getAssetUrl, getOptimizedImageUrl } from '../utils/assetUtils';
 
-// Función para obtener la URL de imagen de raid optimizada
+/**
+ * Helper function to get optimized raid image URLs
+ * Controls whether to use optimized images or originals
+ * 
+ * @param {string} imagePath - Path to the original raid image
+ * @returns {string} - URL to the appropriate image version
+ */
 const getRaidImageUrl = (imagePath) => {
-  // Durante el desarrollo, usar las imágenes originales hasta que se ejecute el script de optimización
-  // Una vez ejecutado el script de optimización, cambiar a true
-  const useOptimized = true; 
+  // Toggle to enable optimized images after running the optimization script
+  // Set to true after running 'npm run optimize-images'
+  const useOptimized = true;
   return getOptimizedImageUrl(imagePath, 'md', useOptimized);
 };
 
+/**
+ * Raid configuration data
+ * Contains information about all available raids:
+ * - id: Unique identifier for the raid
+ * - name: Display name
+ * - totalPlayers: Number of players in the raid (4 or 8)
+ * - difficulty: Default difficulty setting
+ * - availableDifficulties: Array of possible difficulty options
+ * - image: Path to the raid's thumbnail image
+ */
 export const raids = [
   {
     id: 'echidna',

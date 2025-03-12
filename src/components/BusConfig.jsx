@@ -1,7 +1,13 @@
+/**
+ * BusConfig Component
+ * Main component for configuring bus runs and calculating gold distribution
+ * Handles different raid scenarios and calculates optimal gold distribution between drivers and buyers
+ */
 import { useState, useEffect } from 'react';
 import { getAssetUrl, getOptimizedImageUrl } from '../utils/assetUtils';
 
 export default function BusConfig({ raid, onConfigChange }) {
+  // Component state management
   const [drivers, setDrivers] = useState(1);
   const [price, setPrice] = useState(5000);
   const [buyerPrice, setBuyerPrice] = useState(0);
@@ -9,13 +15,18 @@ export default function BusConfig({ raid, onConfigChange }) {
   const [animateResult, setAnimateResult] = useState(false);
   const [goldDistribution, setGoldDistribution] = useState([]);
   
-  // Ruta del icono de oro (usando versión optimizada)
+  // Get optimized gold icon URL
   const goldIconUrl = getOptimizedImageUrl('images/icons/gold.webp', 'sm', true);
   
+  // Calculate maximum drivers and buyers based on raid configuration
   const maxDrivers = raid ? raid.totalPlayers - 1 : 0;
   const buyers = raid ? raid.totalPlayers - drivers : 0;
   
-  // Calculate gold distribution between drivers
+  /**
+   * Main function to calculate gold distribution between drivers
+   * Handles different raid scenarios (1c7, 2c6, 5c3, 6c2, etc.)
+   * Returns an array of distribution objects containing driver, buyer and gold amount
+   */
   const calculateGoldDistribution = (totalPrice, driversCount, buyersCount) => {
     if (driversCount <= 0 || buyersCount <= 0) return [];
     
@@ -467,6 +478,11 @@ export default function BusConfig({ raid, onConfigChange }) {
     return distribution;
   };
   
+  /**
+   * Effect hook to handle gold distribution calculations
+   * Triggers when raid, drivers or price changes
+   * Updates the gold distribution and notifies parent component
+   */
   useEffect(() => {
     if (raid && drivers > 0 && price > 0) {
       setIsCalculating(true);
@@ -497,6 +513,10 @@ export default function BusConfig({ raid, onConfigChange }) {
     }
   }, [raid, drivers, price, buyers, onConfigChange]);
   
+  /**
+   * Handlers for input changes
+   * Validate and update drivers count and price values
+   */
   const handleDriverChange = (e) => {
     const value = e.target.value;
     
@@ -543,7 +563,10 @@ export default function BusConfig({ raid, onConfigChange }) {
     setPrice(numValue);
   };
   
-  // Format gold value with k suffix for thousands
+  /**
+   * Helper function to format gold values
+   * Converts large numbers to k format (e.g., 1000 -> 1k)
+   */
   const formatGold = (value) => {
     if (value >= 1000) {
       return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)}k`;
@@ -553,6 +576,14 @@ export default function BusConfig({ raid, onConfigChange }) {
   
   if (!raid) return null;
   
+  /**
+   * Component UI rendering
+   * Includes:
+   * - Driver count configuration
+   * - Price input and quick selection buttons
+   * - Results display with total calculations
+   * - Detailed gold distribution table
+   */
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-slide-up relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/10 to-purple-50/10 dark:from-blue-900/5 dark:to-purple-900/5"></div>

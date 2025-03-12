@@ -1,70 +1,79 @@
 /**
- * Función para generar rutas de assets compatibles con la base URL
- * tanto en desarrollo local como en GitHub Pages
+ * Asset URL Utility Functions
+ * Handles proper URL generation for assets in both development and production environments
+ */
+
+/**
+ * Generates asset URLs compatible with both local development and GitHub Pages
+ * Uses the appropriate base URL based on the environment configuration
+ * 
+ * @param {string} path - Relative path to the asset
+ * @returns {string} - Complete URL with correct base path
  */
 export const getAssetUrl = (path) => {
-  // Usar import.meta.env.BASE_URL para obtener la ruta base configurada en vite.config.js
+  // Get base URL from Vite configuration
   const baseUrl = import.meta.env.BASE_URL || '/';
   
-  // Eliminar cualquier barra inicial en el path para evitar duplicación
+  // Remove any leading slash to prevent duplication
   const cleanPath = path.startsWith('/') ? path.substring(1) : path;
   
-  // Eliminar cualquier barra final en baseUrl para evitar duplicación
+  // Remove any trailing slash from baseUrl to prevent duplication
   const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   
-  // Combinar la base URL con la ruta del asset
+  // Combine base URL with asset path
   return `${cleanBase}/${cleanPath}`;
 }; 
 
 /**
- * Función para obtener la URL de una imagen optimizada
- * según el tamaño deseado (sm, md, lg)
+ * Generates optimized image URLs for different device sizes
+ * Maps a standard image path to the corresponding optimized version
  * 
- * @param {string} path - Ruta relativa de la imagen original
- * @param {string} size - Tamaño deseado (sm: 96px, md: 256px, lg: 512px)
- * @param {boolean} useOptimized - Si debe usar la versión optimizada (default: true)
- * @returns {string} - URL completa de la imagen optimizada
+ * @param {string} path - Original image path
+ * @param {string} size - Desired size variant (sm: 96px, md: 256px, lg: 512px)
+ * @param {boolean} useOptimized - Whether to use optimized versions or originals
+ * @returns {string} - URL to the appropriate image version
  */
 export const getOptimizedImageUrl = (path, size = 'md', useOptimized = true) => {
-  // Si no queremos usar versiones optimizadas, simplemente devolver la URL normal
+  // If optimization is disabled, return standard URL
   if (!useOptimized) {
     return getAssetUrl(path);
   }
   
-  // Comprobar si el tamaño es válido
+  // Validate size parameter
   if (!['sm', 'md', 'lg'].includes(size)) {
-    console.warn(`Tamaño de imagen no válido: ${size}. Usando 'md' por defecto.`);
+    console.warn(`Invalid image size: ${size}. Defaulting to 'md'.`);
     size = 'md';
   }
   
-  // Verificar si la ruta es válida
+  // Handle missing path error
   if (!path) {
-    console.error('Ruta de imagen no especificada');
+    console.error('Image path not specified');
     return '';
   }
   
   try {
-    // Dividir la ruta para insertar 'optimized/[size]'
-    // Ejemplo: 'images/raids/Valtan.webp' -> 'images/raids/optimized/md/Valtan.webp'
+    // Extract path components to create optimized path
+    // Example: 'images/raids/Valtan.webp' -> 'images/raids/optimized/md/Valtan.webp'
     const pathParts = path.split('/');
     
-    // Verificar que la ruta tenga al menos 3 partes (images/categoría/archivo)
+    // Ensure path has enough parts to be processed
     if (pathParts.length < 3) {
-      console.warn('Formato de ruta no compatible con optimización:', path);
+      console.warn('Path format not compatible with optimization:', path);
       return getAssetUrl(path);
     }
     
-    // Extraer el nombre del archivo sin extensión
+    // Extract filename and remove extension
     const fileName = pathParts[pathParts.length - 1];
     const fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
     
-    // Crear la nueva ruta con la estructura optimizada
+    // Create path to optimized version
     const category = pathParts[pathParts.length - 2];
     const optimizedPath = `images/${category}/optimized/${size}/${fileNameWithoutExt}.webp`;
     
     return getAssetUrl(optimizedPath);
   } catch (error) {
-    console.error('Error al generar URL optimizada:', error);
+    // Fallback to original on error
+    console.error('Error generating optimized URL:', error);
     return getAssetUrl(path);
   }
 }; 

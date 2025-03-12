@@ -4,6 +4,12 @@ import { raids } from '../data/raids';
 import OptimizedImage from '../components/OptimizedImage';
 import '../components/PixelCanvas.css';
 
+/**
+ * HomePage Component
+ * 
+ * The main landing page that displays all available raids
+ * and handles raid selection with difficulty options
+ */
 export default function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -11,7 +17,7 @@ export default function HomePage() {
   const [selectedRaid, setSelectedRaid] = useState(null);
   const difficultyModalRef = useRef(null);
   
-  // Effect to handle raid preselection from URL
+  // Handle preselected raid from URL parameters
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const preselectedRaidId = searchParams.get('preselect');
@@ -21,14 +27,14 @@ export default function HomePage() {
       if (raid && raid.availableDifficulties.length > 1) {
         setSelectedRaid(raid);
         
-        // Clear URL parameter without reloading the page
+        // Clear URL parameter without page reload
         const newUrl = window.location.pathname;
         window.history.replaceState({}, '', newUrl);
       }
     }
   }, [location.search]);
   
-  // Effect to handle clicks outside the modal
+  // Handle clicks outside the difficulty selection modal
   useEffect(() => {
     function handleClickOutside(event) {
       if (difficultyModalRef.current && !difficultyModalRef.current.contains(event.target)) {
@@ -47,29 +53,39 @@ export default function HomePage() {
     };
   }, [selectedRaid]);
   
+  /**
+   * Handles raid selection
+   * Either navigates directly (for single-difficulty raids)
+   * or opens difficulty selection modal (for multi-difficulty raids)
+   */
   const handleRaidSelect = (raid) => {
-    // If there's only one difficulty available, navigate directly
+    // For raids with only one difficulty, navigate directly
     if (raid.availableDifficulties.length === 1) {
       navigate(`/raid/${raid.id}?difficulty=${raid.availableDifficulties[0]}`);
       return;
     }
     
-    // If there are multiple difficulties, show the modal
+    // For multi-difficulty raids, show selection modal
     setSelectedRaid(raid);
   };
   
+  /**
+   * Handles difficulty selection from the modal
+   * Navigates to the raid configuration page with selected difficulty
+   */
   const handleDifficultySelect = (difficulty) => {
-    // Navigate directly when selecting the difficulty
     navigate(`/raid/${selectedRaid.id}?difficulty=${difficulty}`);
     closeModal();
   };
   
+  // Closes the difficulty selection modal
   const closeModal = () => {
     setSelectedRaid(null);
   };
   
   return (
     <div className="max-w-5xl mx-auto text-center">
+      {/* Page header section */}
       <section className="mb-12">
         <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 animate-fade-in">
           Lost Ark Bus Calculator
@@ -79,6 +95,7 @@ export default function HomePage() {
         </p>
       </section>
       
+      {/* Raid selection grid */}
       <section className="animate-scale-in">
         <h2 className="text-2xl font-semibold mb-6">Select a Raid</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -94,17 +111,18 @@ export default function HomePage() {
               onMouseEnter={() => setHoveredRaid(raid.id)}
               onMouseLeave={() => setHoveredRaid(null)}
             >
-              {/* Borde con gradiente sutil */}
+              {/* Gradient background effect */}
               <div className={`absolute inset-0 bg-gradient-to-br from-blue-400/10 via-indigo-500/10 to-purple-500/10 dark:from-blue-400/5 dark:via-indigo-500/5 dark:to-purple-500/5 opacity-0 transition-opacity duration-300 pointer-events-none ${
                 hoveredRaid === raid.id ? 'opacity-100' : ''
               }`}></div>
               
-              {/* Indicador de borde con brillo al hover */}
+              {/* Card border highlight */}
               <div className={`absolute inset-0 border border-gray-100/70 dark:border-gray-700/70 rounded-lg transition-colors duration-300 ${
                 hoveredRaid === raid.id ? 'border-blue-300/50 dark:border-blue-500/30' : ''
               }`}></div>
               
               <div className="flex flex-col items-center relative z-10">
+                {/* Raid image container */}
                 <div className={`w-28 h-28 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mb-4 ${
                   hoveredRaid === raid.id ? 'animate-float shadow-md' : 'shadow-sm'
                 } transition-shadow duration-300`}>
@@ -126,11 +144,15 @@ export default function HomePage() {
                     </span>
                   )}
                 </div>
+                
+                {/* Raid name */}
                 <h3 className={`font-medium text-lg mb-1 transition-colors duration-300 ${
                   hoveredRaid === raid.id ? 'text-blue-600 dark:text-blue-400' : ''
                 }`}>
                   {raid.name}
                 </h3>
+                
+                {/* Raid details */}
                 <div className="flex items-center mt-1 text-sm text-gray-600 dark:text-gray-400">
                   <span className="mr-3">{raid.totalPlayers} players</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs ${
@@ -141,6 +163,8 @@ export default function HomePage() {
                     {raid.difficulty}
                   </span>
                 </div>
+                
+                {/* Multiple difficulties indicator */}
                 {raid.availableDifficulties.length > 1 && (
                   <div className="mt-2 text-xs text-blue-600 dark:text-blue-400 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -163,6 +187,7 @@ export default function HomePage() {
             className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4 animate-scale-in will-change-transform"
             style={{ transform: 'translateZ(0)' }}
           >
+            {/* Modal header with raid info */}
             <div className="flex items-center mb-6">
               {selectedRaid.image && (
                 <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mr-4">
@@ -186,6 +211,8 @@ export default function HomePage() {
                   {selectedRaid.totalPlayers} players
                 </p>
               </div>
+              
+              {/* Close button */}
               <button 
                 onClick={closeModal}
                 className="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -199,6 +226,7 @@ export default function HomePage() {
             
             <h4 className="text-lg font-medium mb-4 text-center">Select Difficulty</h4>
             
+            {/* Difficulty options grid */}
             <div className="grid grid-cols-2 gap-4">
               {selectedRaid.availableDifficulties.map((difficulty) => {
                 const isHard = difficulty === 'Hard';
@@ -221,6 +249,7 @@ export default function HomePage() {
                     onClick={() => handleDifficultySelect(difficulty)}
                     className={`pixel-card difficulty-button relative p-4 rounded-lg border-2 transition-all duration-150 flex flex-col items-center cursor-pointer ${borderColor} active:scale-95 will-change-transform overflow-hidden gpu-accelerated ${isHard ? 'bg-red-50 dark:bg-red-900/10' : 'bg-green-50 dark:bg-green-900/10'}`}
                   >
+                    {/* Pixel animation canvas */}
                     <pixel-canvas 
                       data-colors={colors}
                       data-gap="4"
@@ -228,6 +257,7 @@ export default function HomePage() {
                     ></pixel-canvas>
                     
                     <div className="difficulty-button-content relative z-10">
+                      {/* Difficulty icon */}
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${bgColor}`}>
                         {isHard ? (
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600 dark:text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -239,6 +269,8 @@ export default function HomePage() {
                           </svg>
                         )}
                       </div>
+                      
+                      {/* Difficulty name */}
                       <span className={`font-medium ${textColor}`}>
                         {difficulty}
                       </span>

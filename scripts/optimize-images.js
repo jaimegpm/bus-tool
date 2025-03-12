@@ -1,40 +1,42 @@
 /**
- * Script para optimizar automáticamente las imágenes del proyecto
+ * Image Optimization Script
  * 
- * Este script:
- * 1. Busca todas las imágenes en la carpeta public/images
- * 2. Crea versiones optimizadas en varios tamaños (sm, md, lg)
- * 3. Convierte las imágenes a formato WebP con compresión óptima
+ * Automatically optimizes images to improve web performance:
+ * 1. Scans image directories for jpg, jpeg, png, and webp files
+ * 2. Creates optimized versions in multiple sizes (sm, md, lg)
+ * 3. Converts all images to WebP format with optimal compression
  * 
- * Uso: node scripts/optimize-images.js
+ * Usage: node scripts/optimize-images.js
+ * 
+ * After running, update useOptimized=true in src/data/raids.js
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import sharp from 'sharp';
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
 
-// Obtener el directorio actual usando ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Configuración
+// Configuration settings
 const imagesDirs = ['public/images/raids', 'public/images/icons'];
 const sizes = {
-  sm: 96,   // Para iconos pequeños y miniaturas
-  md: 256,  // Para tarjetas de raids
-  lg: 512   // Para pantallas grandes/retina
+  sm: 96,   // Small size for icons and thumbnails
+  md: 256,  // Medium size for cards
+  lg: 512   // Large size for high-res displays
 };
-const quality = 80; // Calidad WebP (0-100)
+const quality = 80; // WebP compression quality (0-100)
 
-// Crear directorios de salida si no existen
+/**
+ * Creates output directories for optimized images
+ * 
+ * @param {string} dirPath - Base directory path
+ */
 const ensureDirectoryExists = (dirPath) => {
+  // Create main optimized directory
   const optimizedDir = path.join(dirPath, 'optimized');
   if (!fs.existsSync(optimizedDir)) {
     fs.mkdirSync(optimizedDir, { recursive: true });
   }
   
-  // Crear subdirectorios para cada tamaño
+  // Create subdirectories for each size
   Object.keys(sizes).forEach(size => {
     const sizeDir = path.join(optimizedDir, size);
     if (!fs.existsSync(sizeDir)) {
@@ -43,36 +45,41 @@ const ensureDirectoryExists = (dirPath) => {
   });
 };
 
-// Procesar un directorio de imágenes
+/**
+ * Processes a directory of images, creating optimized versions
+ * 
+ * @param {string} dirPath - Directory containing images to optimize
+ */
 const processDirectory = async (dirPath) => {
-  console.log(`Procesando directorio: ${dirPath}`);
+  console.log(`Processing directory: ${dirPath}`);
   
-  // Asegurar que existan los directorios de salida
+  // Create output directories
   ensureDirectoryExists(dirPath);
   
-  // Leer archivos en el directorio
+  // Get list of files in directory
   const files = fs.readdirSync(dirPath);
   
-  // Filtrar solo archivos de imagen
+  // Filter for image files
   const imageFiles = files.filter(file => {
     const ext = path.extname(file).toLowerCase();
     return ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
   });
   
-  console.log(`Encontradas ${imageFiles.length} imágenes para optimizar`);
+  console.log(`Found ${imageFiles.length} images to optimize`);
   
-  // Procesar cada imagen
+  // Process each image in the directory
   for (const file of imageFiles) {
     const inputPath = path.join(dirPath, file);
     const fileName = path.parse(file).name;
     
-    console.log(`Optimizando: ${file}`);
+    console.log(`Optimizing: ${file}`);
     
-    // Procesar para cada tamaño
+    // Create versions for each configured size
     for (const [sizeName, size] of Object.entries(sizes)) {
       const outputPath = path.join(dirPath, 'optimized', sizeName, `${fileName}.webp`);
       
       try {
+        // Optimize image: resize, convert to WebP
         await sharp(inputPath)
           .resize(size, size, { 
             fit: 'cover',
@@ -81,31 +88,34 @@ const processDirectory = async (dirPath) => {
           .webp({ quality })
           .toFile(outputPath);
         
-        console.log(`  ✓ Creado ${sizeName}: ${outputPath}`);
+        console.log(`  ✓ Created ${sizeName}: ${outputPath}`);
       } catch (error) {
-        console.error(`  ✗ Error al procesar ${file} a tamaño ${sizeName}:`, error);
+        console.error(`  ✗ Error processing ${file} to ${sizeName}:`, error);
       }
     }
   }
 };
 
-// Función principal
+/**
+ * Main function that processes all configured directories
+ */
 async function main() {
-  console.log('Iniciando optimización de imágenes...');
+  console.log('Starting image optimization...');
   
   try {
-    // Procesar cada directorio configurado
+    // Process each directory in the configuration
     for (const dir of imagesDirs) {
       await processDirectory(dir);
     }
     
-    console.log('✅ Optimización completada con éxito');
-    console.log('Para usar las imágenes optimizadas, actualice las importaciones para usar /images/[categoria]/optimized/[tamaño]/[nombre].webp');
+    console.log('✅ Optimization completed successfully');
+    console.log('To use optimized images, update imports to use /images/[category]/optimized/[size]/[name].webp');
+    console.log('And set useOptimized=true in src/data/raids.js');
   } catch (error) {
-    console.error('❌ Error durante la optimización:', error);
+    console.error('❌ Error during optimization:', error);
     process.exit(1);
   }
 }
 
-// Ejecutar la función principal
+// Execute the main function
 main(); 

@@ -5,6 +5,12 @@ import BusConfig from '../components/BusConfig';
 import OptimizedImage from '../components/OptimizedImage';
 import '../components/PixelCanvas.css';
 
+/**
+ * BusConfigPage Component
+ * 
+ * Displays the configuration page for a specific raid
+ * Allows users to set up bus parameters and view gold distribution
+ */
 export default function BusConfigPage() {
   const { raidId } = useParams();
   const navigate = useNavigate();
@@ -16,42 +22,36 @@ export default function BusConfigPage() {
   const [difficultyMenuOpen, setDifficultyMenuOpen] = useState(false);
   const difficultyMenuRef = useRef(null);
   
+  // Load raid data and apply selected difficulty
   useEffect(() => {
     // Get difficulty from query parameters
     const searchParams = new URLSearchParams(location.search);
     const difficulty = searchParams.get('difficulty') || 'Normal';
     
-    // Find the raid and apply the selected difficulty
+    // Find the raid data by ID
     const selectedRaid = raids.find(r => r.id === raidId);
     if (!selectedRaid) {
       navigate('/');
       return;
     }
     
-    // Check if the difficulty is valid for this raid
+    // Validate difficulty selection
     if (!selectedRaid.availableDifficulties.includes(difficulty)) {
-      // If the difficulty is not valid, use the first available one
+      // If invalid difficulty, redirect to first available one
       const validDifficulty = selectedRaid.availableDifficulties[0];
       navigate(`/raid/${raidId}?difficulty=${validDifficulty}`, { replace: true });
       return;
     }
     
-    // Create a copy of the raid with the selected difficulty
-    const raidWithDifficulty = {
+    // Create raid object with selected difficulty and set state
+    setRaid({
       ...selectedRaid,
       difficulty
-    };
-    
-    setRaid(raidWithDifficulty);
-    setImageError(false);
-    
-    // Add a small delay to activate animations
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
+    });
+    setIsLoaded(true);
   }, [raidId, navigate, location.search]);
   
-  // Effect to handle clicks outside the difficulty menu
+  // Handle clicks outside the difficulty dropdown menu
   useEffect(() => {
     function handleClickOutside(event) {
       if (difficultyMenuRef.current && !difficultyMenuRef.current.contains(event.target)) {
@@ -70,20 +70,24 @@ export default function BusConfigPage() {
     };
   }, [difficultyMenuOpen]);
   
+  // Update the bus configuration state when changes occur
   const handleConfigChange = useCallback((config) => {
     setBusConfig(config);
   }, []);
   
+  // Handle raid image loading errors
   const handleImageError = () => {
     setImageError(true);
   };
   
+  // Toggle the difficulty selection dropdown
   const toggleDifficultyMenu = () => {
     if (raid && raid.availableDifficulties.length > 1) {
       setDifficultyMenuOpen(!difficultyMenuOpen);
     }
   };
   
+  // Handle difficulty change selection
   const handleDifficultyChange = (difficulty) => {
     if (difficulty !== raid.difficulty) {
       navigate(`/raid/${raidId}?difficulty=${difficulty}`, { replace: true });
@@ -95,6 +99,7 @@ export default function BusConfigPage() {
   
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
+      {/* Back to raids button */}
       <div className={`flex items-center mb-6 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div 
           onClick={() => navigate('/')}
@@ -117,8 +122,10 @@ export default function BusConfigPage() {
         </div>
       </div>
       
+      {/* Raid information header */}
       <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8 transition-all duration-500 ${isLoaded ? 'animate-scale-in' : 'opacity-0 scale-95'}`}>
         <div className="flex items-start space-x-6 mb-4">
+          {/* Raid image */}
           <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center shadow-md animate-float shrink-0">
             {raid.image && !imageError ? (
               <OptimizedImage 
@@ -136,6 +143,7 @@ export default function BusConfigPage() {
             )}
           </div>
           
+          {/* Raid details and difficulty selector */}
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 leading-tight mb-2">
               {raid.name}
@@ -144,6 +152,7 @@ export default function BusConfigPage() {
             <div className="flex items-center">
               <span className="text-gray-600 dark:text-gray-400">{raid.totalPlayers} players</span>
               
+              {/* Difficulty dropdown menu */}
               <div ref={difficultyMenuRef} className="relative ml-3">
                 <button 
                   className={`px-2 py-0.5 rounded-full text-xs flex items-center space-x-1 ${
@@ -164,7 +173,7 @@ export default function BusConfigPage() {
                   )}
                 </button>
                 
-                {/* Dropdown menu for difficulties - Absolutely positioned to not affect layout */}
+                {/* Difficulty selection dropdown */}
                 {difficultyMenuOpen && raid.availableDifficulties.length > 1 && (
                   <div className="absolute top-full left-0 mt-1 z-10 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 min-w-[120px] animate-fade-in will-change-transform" style={{ transform: 'translateZ(0)' }}>
                     {raid.availableDifficulties.map((difficulty) => (
@@ -195,15 +204,18 @@ export default function BusConfigPage() {
         </div>
       </div>
       
+      {/* Bus configuration section */}
       <section className={`transition-all duration-500 delay-100 ${isLoaded ? 'animate-slide-up' : 'opacity-0 translate-y-4'}`}>
         <h2 className="text-2xl font-semibold mb-4">Configure Bus</h2>
         <BusConfig raid={raid} onConfigChange={handleConfigChange} />
       </section>
       
+      {/* Bus configuration summary */}
       {busConfig && (
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-fade-in">
           <h2 className="text-2xl font-semibold mb-4">Summary</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Bus details overview */}
             <div>
               <h3 className="text-lg font-medium mb-2">Bus Details</h3>
               <ul className="space-y-2">
@@ -232,6 +244,7 @@ export default function BusConfigPage() {
               </ul>
             </div>
             
+            {/* Listing instructions for buyers */}
             <div>
               <h3 className="text-lg font-medium mb-2">Listing Instructions</h3>
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-md relative overflow-hidden">
