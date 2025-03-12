@@ -18,6 +18,10 @@ _A tool to automatically calculate prices and gold distribution for buses (carri
 ![Formik](https://img.shields.io/badge/Formik-Forms%20Made%20Easy-00DC82?style=for-the-badge&logo=formik&logoColor=white)  
 ![Yup](https://img.shields.io/badge/Yup-Schema%20Validation-4B32C3?style=for-the-badge)  
 
+## 🌐 Live Demo  
+
+[![Live Demo](https://img.shields.io/badge/🚀%20Check%20Live%20Demo-Click%20Here-brightgreen?style=for-the-badge)](https://jaimegpm.github.io/bus-tool)  
+
 ## 🚀 Installation  
 
 ```bash
@@ -32,6 +36,9 @@ npm install
 
 # Start development server
 npm run dev
+
+# Deployment
+npm run deploy
 ```
 
 ## 🎮 Usage  
@@ -47,8 +54,4 @@ npm run dev
 2. **Create a new branch** → `git checkout -b feature/amazing-feature`  
 3. **Commit your changes** → `git commit -m 'Add some amazing feature'`  
 4. **Push to GitHub** → `git push origin feature/amazing-feature`  
-5. **Open a Pull Request**  
-
-## 🌐 Live Demo  
-
-[![Live Demo](https://img.shields.io/badge/🚀%20Check%20Live%20Demo-Click%20Here-brightgreen?style=for-the-badge)](https://jaimegpm.github.io/bus-tool)
+5. **Open a Pull Request**
