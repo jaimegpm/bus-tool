@@ -119,7 +119,7 @@ export default function BusDetails({ raid, busConfig }) {
             <div className="text-xs text-blue-600 dark:text-blue-400 uppercase font-medium tracking-wider">Bus Gold</div>
             <div className="text-2xl font-bold text-blue-800 dark:text-blue-300">{formatGold(busGoldPerDriver)}</div>
             <div className="text-xs text-blue-600/80 dark:text-blue-400/80">
-              {Math.round(sharesPerDriver)} shares per driver ({formatGold(busConfig.pricePerBuyer)} each)
+              {Number(sharesPerDriver).toFixed(Number.isInteger(sharesPerDriver) ? 0 : 2)} shares per driver
             </div>
           </div>
           
@@ -154,23 +154,26 @@ export default function BusDetails({ raid, busConfig }) {
                 Party Setup Guide
               </h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className={`grid grid-cols-1 ${raid.totalPlayers === 16 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2'} gap-4`}>
                 {/* First party */}
                 <div className="bg-white/60 dark:bg-gray-800/40 px-4 py-3 rounded-lg shadow-sm">
                   <div className="flex items-center justify-center mb-3">
                     <div className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Party 1</div>
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
+                    {/* Drivers first */}
                     {Array.from({ length: Math.min(4, busConfig.drivers) }).map((_, i) => (
                       <span key={`driver-p1-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium border border-blue-200 dark:border-blue-800/50">
                         Driver {i + 1}
                       </span>
                     ))}
+                    {/* Then buyers */}
                     {Array.from({ length: Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers) }).map((_, i) => (
                       <span key={`buyer-p1-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium border border-purple-200 dark:border-purple-800/50">
                         Buyer {i + 1}
                       </span>
                     ))}
+                    {/* Empty slots if needed */}
                     {Array.from({ length: Math.max(0, 4 - Math.min(4, busConfig.drivers) - Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers)) }).map((_, i) => (
                       <span key={`empty-p1-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-gray-50 dark:bg-gray-800/20 text-gray-400 dark:text-gray-600 text-xs font-medium border border-gray-200 dark:border-gray-700/30">
                         Empty
@@ -179,28 +182,85 @@ export default function BusDetails({ raid, busConfig }) {
                   </div>
                 </div>
                 
-                {/* Second party - for 8-player raids */}
-                {raid.totalPlayers === 8 && (
+                {/* Second party - for 8-player and 16-player raids */}
+                {(raid.totalPlayers === 8 || raid.totalPlayers === 16) && (
                   <div className="bg-white/60 dark:bg-gray-800/40 px-4 py-3 rounded-lg shadow-sm">
                     <div className="flex items-center justify-center mb-3">
                       <div className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Party 2</div>
                     </div>
                     <div className="flex flex-wrap gap-2 justify-center">
-                      {Array.from({ length: Math.max(0, busConfig.drivers - 4) }).map((_, i) => (
+                      {/* Drivers first */}
+                      {Array.from({ length: Math.min(4, Math.max(0, busConfig.drivers - 4)) }).map((_, i) => (
                         <span key={`driver-p2-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium border border-blue-200 dark:border-blue-800/50">
                           Driver {i + 5}
                         </span>
                       ))}
-                      {Array.from({ length: Math.min(4 - Math.max(0, busConfig.drivers - 4), Math.max(0, busConfig.buyers - Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers))) }).map((_, i) => (
-                        <span key={`buyer-p2-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium border border-purple-200 dark:border-purple-800/50">
-                          Buyer {i + 1 + Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers)}
+                      {/* Then buyers - starting from the next buyer number after party 1 */}
+                      {Array.from({ length: 4 - Math.min(4, Math.max(0, busConfig.drivers - 4)) }).map((_, i) => {
+                        const buyerNumber = Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers) + i + 1;
+                        return (
+                          <span key={`buyer-p2-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium border border-purple-200 dark:border-purple-800/50">
+                            Buyer {buyerNumber}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Third party - only for 16-player raids */}
+                {raid.totalPlayers === 16 && (
+                  <div className="bg-white/60 dark:bg-gray-800/40 px-4 py-3 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-center mb-3">
+                      <div className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Party 3</div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {/* Drivers first */}
+                      {Array.from({ length: Math.min(4, Math.max(0, busConfig.drivers - 8)) }).map((_, i) => (
+                        <span key={`driver-p3-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium border border-blue-200 dark:border-blue-800/50">
+                          Driver {i + 9}
                         </span>
                       ))}
-                      {Array.from({ length: Math.max(0, 4 - Math.max(0, busConfig.drivers - 4) - Math.min(4 - Math.max(0, busConfig.drivers - 4), Math.max(0, busConfig.buyers - Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers)))) }).map((_, i) => (
-                        <span key={`empty-p2-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-gray-50 dark:bg-gray-800/20 text-gray-400 dark:text-gray-600 text-xs font-medium border border-gray-200 dark:border-gray-700/30">
-                          Empty
+                      {/* Then buyers - starting from the next buyer number after party 2 */}
+                      {Array.from({ length: 4 - Math.min(4, Math.max(0, busConfig.drivers - 8)) }).map((_, i) => {
+                        const buyersInParty1 = Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers);
+                        const buyersInParty2 = 4 - Math.min(4, Math.max(0, busConfig.drivers - 4));
+                        const buyerNumber = buyersInParty1 + buyersInParty2 + i + 1;
+                        return (
+                          <span key={`buyer-p3-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium border border-purple-200 dark:border-purple-800/50">
+                            Buyer {buyerNumber}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Fourth party - only for 16-player raids */}
+                {raid.totalPlayers === 16 && (
+                  <div className="bg-white/60 dark:bg-gray-800/40 px-4 py-3 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-center mb-3">
+                      <div className="text-sm font-medium text-yellow-700 dark:text-yellow-400">Party 4</div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {/* Drivers first */}
+                      {Array.from({ length: Math.min(4, Math.max(0, busConfig.drivers - 12)) }).map((_, i) => (
+                        <span key={`driver-p4-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium border border-blue-200 dark:border-blue-800/50">
+                          Driver {i + 13}
                         </span>
                       ))}
+                      {/* Then buyers - starting from the next buyer number after party 3 */}
+                      {Array.from({ length: 4 - Math.min(4, Math.max(0, busConfig.drivers - 12)) }).map((_, i) => {
+                        const buyersInParty1 = Math.min(4 - Math.min(4, busConfig.drivers), busConfig.buyers);
+                        const buyersInParty2 = 4 - Math.min(4, Math.max(0, busConfig.drivers - 4));
+                        const buyersInParty3 = 4 - Math.min(4, Math.max(0, busConfig.drivers - 8));
+                        const buyerNumber = buyersInParty1 + buyersInParty2 + buyersInParty3 + i + 1;
+                        return (
+                          <span key={`buyer-p4-${i}`} className="inline-flex items-center justify-center w-20 h-8 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium border border-purple-200 dark:border-purple-800/50">
+                            Buyer {buyerNumber}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

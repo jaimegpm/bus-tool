@@ -131,6 +131,11 @@ export default function ResultsSummary({
                                 <img src={goldIconUrl} alt="Gold" className="w-4 h-4 mr-1.5" />
                                 <span className="font-medium">
                                   {formatGold(item.gold)}
+                                  {item.isGrouped && item.totalBuyers && (
+                                    <span className="text-xs ml-1 opacity-80">
+                                      × {item.totalBuyers}
+                                    </span>
+                                  )}
                                 </span>
                               </span>
                             </div>
