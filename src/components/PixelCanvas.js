@@ -297,5 +297,5 @@ class PixelCanvas extends HTMLElement {
 // Registrar el componente
 PixelCanvas.register();
 
-// Exportar para poder importarlo en otros archivos
+// Export to be able to import it in other files
 export default PixelCanvas; 

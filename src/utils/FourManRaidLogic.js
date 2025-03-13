@@ -1,15 +1,15 @@
 /**
- * Lógica específica para la distribución de oro en raids de 4 jugadores
+ * Specific logic for gold distribution in 4-player raids
  */
 
 /**
- * Calcula la distribución de oro para raids de 4 jugadores
- * @param {number} totalPrice - Precio por comprador
- * @param {number} driversCount - Número de conductores
- * @param {number} buyersCount - Número de compradores
- * @param {object} driverGold - Objeto para seguimiento del oro por conductor
- * @param {number} goldPerDriver - Oro por conductor (opcional, para caso genérico)
- * @returns {Array} Objetos de distribución
+ * Calculates gold distribution for 4-player raids
+ * @param {number} totalPrice - Price per buyer
+ * @param {number} driversCount - Number of drivers
+ * @param {number} buyersCount - Number of buyers
+ * @param {object} driverGold - Object tracking gold per driver
+ * @param {number} goldPerDriver - Gold per driver (optional, for generic case)
+ * @returns {Array} Distribution objects
  */
 export const calculateFourManDistribution = (totalPrice, driversCount, buyersCount, driverGold, goldPerDriver) => {
   const distribution = [];
@@ -49,9 +49,9 @@ export const calculateFourManDistribution = (totalPrice, driversCount, buyersCou
   }
   // Generic 4-player distribution
   else {
-    // Para el caso genérico, necesitamos importar la función handleGenericDistribution
-    // Pero como esto podría crear una dependencia circular, vamos a implementar
-    // una versión simplificada específica para 4 jugadores
+    // For generic case, we need to import handleGenericDistribution
+    // But since this could create circular dependency, we'll implement
+    // a simplified version specific for 4 players
     distribution.push(...handleFourManGenericDistribution(totalPrice, driversCount, buyersCount, goldPerDriver || Math.floor(totalPrice * buyersCount / driversCount), driverGold));
   }
   
@@ -59,26 +59,26 @@ export const calculateFourManDistribution = (totalPrice, driversCount, buyersCou
 };
 
 /**
- * Maneja la distribución de oro para configuraciones no estándar de raids de 4 jugadores
- * @param {number} totalPrice - Precio por comprador
- * @param {number} driversCount - Número de conductores
- * @param {number} buyersCount - Número de compradores
- * @param {number} goldPerDriver - Oro por conductor
- * @param {object} driverGold - Objeto para seguimiento del oro por conductor
- * @returns {Array} Objetos de distribución
+ * Handles gold distribution for non-standard 4-player raid configurations
+ * @param {number} totalPrice - Price per buyer
+ * @param {number} driversCount - Number of drivers
+ * @param {number} buyersCount - Number of buyers
+ * @param {number} goldPerDriver - Gold per driver
+ * @param {object} driverGold - Object tracking gold per driver
+ * @returns {Array} Distribution objects
  */
 const handleFourManGenericDistribution = (totalPrice, driversCount, buyersCount, goldPerDriver, driverGold) => {
   const distribution = [];
   
-  // Simplificado para raids de 4 jugadores
+  // Simplified for 4-player raids
   const buyers = [];
   for (let i = 1; i <= buyersCount; i++) {
     buyers.push(i + driversCount);
   }
   
-  // Asignar compradores a conductores
+  // Assign buyers to drivers
   for (let i = 0; i < buyers.length; i++) {
-    // Encontrar el conductor que necesita más oro
+    // Find driver who needs most gold
     const driverEntries = Object.entries(driverGold)
       .sort((a, b) => a[1] - b[1]);
     const driverId = parseInt(driverEntries[0][0]);
