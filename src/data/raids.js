@@ -157,7 +157,7 @@ export const raids = [
   {
     id: 'behemoth',
     name: 'Behemoth',
-    totalPlayers: 8,
+    totalPlayers: 16,
     difficulty: 'Normal',
     availableDifficulties: ['Normal'],
     image: getRaidImageUrl('images/raids/Behemoth.webp'),
