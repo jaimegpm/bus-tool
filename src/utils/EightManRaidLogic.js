@@ -1,14 +1,14 @@
 /**
- * Lógica específica para la distribución de oro en raids de 8 jugadores
+ * Specific logic for gold distribution in 8-player raids
  */
 
 /**
- * Calcula la distribución de oro para raids de 8 jugadores
- * @param {number} totalPrice - Precio por comprador
- * @param {number} driversCount - Número de conductores
- * @param {number} buyersCount - Número de compradores
- * @param {object} driverGold - Objeto para seguimiento del oro por conductor
- * @returns {Array} Objetos de distribución
+ * Calculates gold distribution for 8-player raids
+ * @param {number} totalPrice - Price per buyer
+ * @param {number} driversCount - Number of drivers
+ * @param {number} buyersCount - Number of buyers
+ * @param {object} driverGold - Object tracking gold per driver
+ * @returns {Array} Distribution objects
  */
 export const calculateEightManDistribution = (totalPrice, driversCount, buyersCount, driverGold) => {
   const distribution = [];
@@ -79,7 +79,7 @@ export const calculateEightManDistribution = (totalPrice, driversCount, buyersCo
   }
   // 4 drivers, 4 buyers
   else if (driversCount === 4 && buyersCount === 4) {
-    // Cada conductor vende al comprador con el mismo número en Party 2
+    // Each driver sells to the buyer with the same number in Party 2
     for (let i = 1; i <= 4; i++) {
       distribution.push({ 
         driver: i, 
