@@ -8,7 +8,7 @@ export default function MainLayout({ children }) {
   const location = useLocation();
   
   useEffect(() => {
-    // Detect scroll to change header appearance
+    // Handle header appearance on scroll
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
       if (isScrolled !== scrolled) {
@@ -16,7 +16,7 @@ export default function MainLayout({ children }) {
       }
     };
     
-    // Use requestAnimationFrame to optimize scroll performance
+    // Optimize scroll performance
     let ticking = false;
     const onScroll = () => {
       if (!ticking) {
@@ -30,7 +30,7 @@ export default function MainLayout({ children }) {
     
     window.addEventListener('scroll', onScroll, { passive: true });
     
-    // Mount effect for animations
+    // Initial mount animation
     setTimeout(() => {
       setMounted(true);
     }, 100);
@@ -40,7 +40,7 @@ export default function MainLayout({ children }) {
     };
   }, [scrolled]);
   
-  // Close mobile menu when route changes
+  // Mobile menu handling
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
@@ -97,7 +97,7 @@ export default function MainLayout({ children }) {
               </div>
             </div>
             
-            {/* Mobile menu */}
+            {/* Mobile navigation menu */}
             <div 
               className={`md:hidden py-3 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 ease-in-out ${
                 mobileMenuOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
@@ -120,12 +120,14 @@ export default function MainLayout({ children }) {
           </div>
         </header>
         
+        {/* Main content area */}
         <main className={`flex-grow py-8 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'} gpu-accelerated`}>
           <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
             {children}
           </div>
         </main>
         
+        {/* Footer section */}
         <footer className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-inner mt-auto">
           <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="text-center text-sm text-gray-500 dark:text-gray-400">

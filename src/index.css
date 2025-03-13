@@ -1,8 +1,9 @@
+/* Tailwind imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Background pattern for MainLayout */
+/* Grid background pattern */
 .bg-grid-pattern {
   background-image: 
     linear-gradient(to right, rgba(100, 116, 139, 0.1) 1px, transparent 1px),
@@ -11,7 +12,7 @@
   will-change: transform;
 }
 
-/* Additional custom styles */
+/* Custom text utilities */
 @layer utilities {
   .text-shadow {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -28,7 +29,7 @@
   }
 }
 
-/* Custom animations */
+/* Animation keyframes */
 @keyframes float {
   0%, 100% {
     transform: translateY(0);
@@ -48,7 +49,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Smooth transitions for theme changes */
+/* Theme transitions */
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -84,7 +85,7 @@ body {
   background: rgba(107, 114, 128, 0.7);
 }
 
-/* Animation optimizations */
+/* Animation performance */
 .animate-fade-in,
 .animate-scale-in,
 .animate-slide-up,
@@ -94,7 +95,7 @@ body {
   backface-visibility: hidden;
 }
 
-/* Transition optimizations */
+/* Transition performance */
 .transition-all,
 .transition-colors,
 .transition-opacity,
@@ -102,6 +103,7 @@ body {
   will-change: auto;
 }
 
+/* Root styles */
 :root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
@@ -117,6 +119,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Links */
 a {
   font-weight: 500;
   color: #646cff;
@@ -126,17 +129,20 @@ a:hover {
   color: #535bf2;
 }
 
+/* Body */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
 }
 
+/* Headings */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/* Buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -156,6 +162,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light mode */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -169,6 +176,7 @@ button:focus-visible {
   }
 }
 
+/* Tailwind components */
 @layer components {
   .btn {
     @apply px-4 py-2 rounded-md font-medium transition-colors;

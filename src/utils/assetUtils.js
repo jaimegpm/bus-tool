@@ -1,14 +1,11 @@
 /**
- * Asset URL Utility Functions
- * Handles proper URL generation for assets in both development and production environments
+ * Asset URL utilities for handling image paths and URLs
  */
 
 /**
- * Generates asset URLs compatible with both local development and GitHub Pages
- * Uses the appropriate base URL based on the environment configuration
- * 
- * @param {string} path - Relative path to the asset
- * @returns {string} - Complete URL with correct base path
+ * Generates asset URLs for both dev and prod environments
+ * @param {string} path - Asset path
+ * @returns {string} - Full asset URL
  */
 export const getAssetUrl = (path) => {
   // Get base URL from Vite configuration
@@ -25,16 +22,14 @@ export const getAssetUrl = (path) => {
 }; 
 
 /**
- * Generates optimized image URLs for different device sizes
- * Maps a standard image path to the corresponding optimized version
- * 
+ * Generates optimized image URLs for different sizes
  * @param {string} path - Original image path
- * @param {string} size - Desired size variant (sm: 96px, md: 256px, lg: 512px)
- * @param {boolean} useOptimized - Whether to use optimized versions or originals
- * @returns {string} - URL to the appropriate image version
+ * @param {string} size - Size variant (sm/md/lg)
+ * @param {boolean} useOptimized - Use optimized versions
+ * @returns {string} - URL for the image
  */
 export const getOptimizedImageUrl = (path, size = 'md', useOptimized = true) => {
-  // If optimization is disabled, return standard URL
+  // Return standard URL if optimization disabled
   if (!useOptimized) {
     return getAssetUrl(path);
   }
@@ -52,27 +47,26 @@ export const getOptimizedImageUrl = (path, size = 'md', useOptimized = true) => 
   }
   
   try {
-    // Extract path components to create optimized path
-    // Example: 'images/raids/Valtan.webp' -> 'images/raids/optimized/md/Valtan.webp'
+    // Split path into components
     const pathParts = path.split('/');
     
-    // Ensure path has enough parts to be processed
+    // Validate path format
     if (pathParts.length < 3) {
       console.warn('Path format not compatible with optimization:', path);
       return getAssetUrl(path);
     }
     
-    // Extract filename and remove extension
+    // Get filename without extension
     const fileName = pathParts[pathParts.length - 1];
     const fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
     
-    // Create path to optimized version
+    // Build optimized path
     const category = pathParts[pathParts.length - 2];
     const optimizedPath = `images/${category}/optimized/${size}/${fileNameWithoutExt}.webp`;
     
     return getAssetUrl(optimizedPath);
   } catch (error) {
-    // Fallback to original on error
+    // Return original on error
     console.error('Error generating optimized URL:', error);
     return getAssetUrl(path);
   }

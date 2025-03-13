@@ -5,10 +5,7 @@ import OptimizedImage from '../components/OptimizedImage';
 import '../components/PixelCanvas.css';
 
 /**
- * HomePage Component
- * 
- * The main landing page that displays all available raids
- * and handles raid selection with difficulty options
+ * Main page component that displays raid selection grid and handles raid/difficulty selection
  */
 export default function HomePage() {
   const navigate = useNavigate();
@@ -17,7 +14,7 @@ export default function HomePage() {
   const [selectedRaid, setSelectedRaid] = useState(null);
   const difficultyModalRef = useRef(null);
   
-  // Handle preselected raid from URL parameters
+  // Handle raid preselection from URL
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const preselectedRaidId = searchParams.get('preselect');
@@ -34,7 +31,7 @@ export default function HomePage() {
     }
   }, [location.search]);
   
-  // Handle clicks outside the difficulty selection modal
+  // Handle clicks outside difficulty modal
   useEffect(() => {
     function handleClickOutside(event) {
       if (difficultyModalRef.current && !difficultyModalRef.current.contains(event.target)) {
@@ -53,32 +50,22 @@ export default function HomePage() {
     };
   }, [selectedRaid]);
   
-  /**
-   * Handles raid selection
-   * Either navigates directly (for single-difficulty raids)
-   * or opens difficulty selection modal (for multi-difficulty raids)
-   */
+  // Handle raid selection and navigation
   const handleRaidSelect = (raid) => {
-    // For raids with only one difficulty, navigate directly
     if (raid.availableDifficulties.length === 1) {
       navigate(`/raid/${raid.id}?difficulty=${raid.availableDifficulties[0]}`);
       return;
     }
     
-    // For multi-difficulty raids, show selection modal
     setSelectedRaid(raid);
   };
   
-  /**
-   * Handles difficulty selection from the modal
-   * Navigates to the raid configuration page with selected difficulty
-   */
+  // Handle difficulty selection from modal
   const handleDifficultySelect = (difficulty) => {
     navigate(`/raid/${selectedRaid.id}?difficulty=${difficulty}`);
     closeModal();
   };
   
-  // Closes the difficulty selection modal
   const closeModal = () => {
     setSelectedRaid(null);
   };

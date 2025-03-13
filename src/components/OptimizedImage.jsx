@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
 /**
- * OptimizedImage Component
- * A simple component that handles image loading with basic error handling
+ * Handles image loading and displays fallback content on errors
  */
 export default function OptimizedImage({ 
   src, 
@@ -15,7 +14,7 @@ export default function OptimizedImage({
 }) {
   const [error, setError] = useState(false);
   
-  // Handle image loading errors
+  // Error handler
   const handleError = (e) => {
     setError(true);
     if (onError) {
@@ -23,7 +22,7 @@ export default function OptimizedImage({
     }
   };
   
-  // Display fallback content if image fails to load
+  // Show fallback UI on error
   if (error) {
     return (
       <div 
@@ -37,7 +36,7 @@ export default function OptimizedImage({
     );
   }
   
-  // Render optimized image
+  // Main image render
   return (
     <img 
       src={src} 

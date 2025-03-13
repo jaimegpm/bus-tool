@@ -1,7 +1,6 @@
 /**
- * BusConfig Component
- * Main component for configuring bus runs and calculating gold distribution
- * Handles different raid scenarios and calculates optimal gold distribution between drivers and buyers
+ * Main component for bus run configuration and gold distribution calculations
+ * Handles raid scenarios and gold distribution between drivers and buyers
  */
 import { useState, useEffect } from 'react';
 import { getAssetUrl, getOptimizedImageUrl } from '../utils/assetUtils';
@@ -11,7 +10,7 @@ import DriverSelector from './bus/DriverSelector';
 import PriceInput from './bus/PriceInput';
 
 export default function BusConfig({ raid, onConfigChange }) {
-  // Component state management
+  // State management
   const [drivers, setDrivers] = useState(1);
   const [price, setPrice] = useState(5000);
   const [buyerPrice, setBuyerPrice] = useState(0);
@@ -19,30 +18,24 @@ export default function BusConfig({ raid, onConfigChange }) {
   const [animateResult, setAnimateResult] = useState(false);
   const [goldDistribution, setGoldDistribution] = useState([]);
   
-  // Get optimized gold icon URL
   const goldIconUrl = getOptimizedImageUrl('images/icons/gold.webp', 'sm', true);
   
-  // Calculate maximum drivers and buyers based on raid configuration
+  // Calculate max drivers and buyers
   const maxDrivers = raid ? raid.totalPlayers - 1 : 0;
   const buyers = raid ? raid.totalPlayers - drivers : 0;
   
   /**
-   * Effect hook to handle gold distribution calculations
-   * Triggers when raid, drivers or price changes
-   * Updates the gold distribution and notifies parent component
+   * Handles gold distribution calculations when raid, drivers or price changes
+   * Updates distribution and notifies parent component
    */
   useEffect(() => {
     if (raid && drivers > 0 && price > 0) {
       setIsCalculating(true);
       setAnimateResult(false);
       
-      // Simulate calculation delay for better UX
       const timer = setTimeout(() => {
-        // Calculate gold distribution using the imported function
         const distribution = calculateGoldDistribution(price, drivers, buyers, raid);
         setGoldDistribution(distribution);
-        
-        // Set buyer price (each buyer pays the full price)
         setBuyerPrice(price);
         
         onConfigChange({
@@ -62,32 +55,26 @@ export default function BusConfig({ raid, onConfigChange }) {
   }, [raid, drivers, price, buyers, onConfigChange]);
   
   /**
-   * Handlers for input changes
-   * Validate and update drivers count and price values
+   * Input change handlers for drivers and price
    */
   const handleDriverChange = (e) => {
     const value = e.target.value;
     
-    // Si está vacío, establecer directamente a 1
     if (value === '') {
-      setDrivers(1);
+      setDrivers(0);
       return;
     }
     
     const numValue = parseInt(value, 10);
     
-    // Validar que sea un número
     if (isNaN(numValue)) return;
     
-    // Si es menor que 1, establecer en 1
     if (numValue < 1) {
       setDrivers(1);
     } 
-    // Si es mayor que el máximo, establecer al máximo
     else if (numValue >= raid.totalPlayers) {
       setDrivers(maxDrivers);
     }
-    // Caso normal
     else {
       setDrivers(numValue);
     }
@@ -96,7 +83,6 @@ export default function BusConfig({ raid, onConfigChange }) {
   const handlePriceChange = (e) => {
     const value = e.target.value;
     
-    // Si está vacío, establecer a 0
     if (value === '') {
       setPrice(0);
       return;
@@ -104,22 +90,19 @@ export default function BusConfig({ raid, onConfigChange }) {
     
     const numValue = parseInt(value, 10);
     
-    // Validar que sea un número
     if (isNaN(numValue)) return;
     
-    // Si es válido, actualizamos
     setPrice(numValue);
   };
   
   if (!raid) return null;
   
   /**
-   * Component UI rendering
-   * Includes:
-   * - Driver count configuration
-   * - Price input and quick selection buttons
-   * - Results display with total calculations
-   * - Detailed gold distribution table
+   * Main component render with:
+   * - Driver configuration
+   * - Price inputs
+   * - Results display
+   * - Gold distribution table
    */
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-slide-up relative overflow-hidden">

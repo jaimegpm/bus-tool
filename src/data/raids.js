@@ -24,6 +24,8 @@ const getRaidImageUrl = (imagePath) => {
  * - difficulty: Default difficulty setting
  * - availableDifficulties: Array of possible difficulty options
  * - image: Path to the raid's thumbnail image
+ * - goldReward: Object containing gold rewards for each difficulty
+ * - specialReward: Object containing paths to special reward images for each difficulty
  */
 export const raids = [
   {
@@ -33,6 +35,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Echidna.webp'),
+    goldReward: {
+      Normal: 16000,
+      Hard: 19500
+    },
+    specialReward: {
+      Normal: 'images/rewards/Echidna-normal-reward.webp',
+      Hard: 'images/rewards/Echidna-hard-reward.webp'
+    }
   },
   {
     id: 'kakul',
@@ -41,6 +51,12 @@ export const raids = [
     difficulty: 'Normal',
     availableDifficulties: ['Normal'],
     image: getRaidImageUrl('images/raids/Kakul.webp'),
+    goldReward: {
+      Normal: 2000
+    },
+    specialReward: {
+      Normal: 'images/rewards/Kakul-reward.webp'
+    }
   },
   {
     id: 'brelshaza-act2',
@@ -49,6 +65,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Brelshaza.webp'),
+    goldReward: {
+      Normal: 27500,
+      Hard: 34000
+    },
+    specialReward: {
+      Normal: 'images/rewards/Brelshaza-reward.webp',
+      Hard: 'images/rewards/Brelshaza-reward.webp'
+    }
   },
   {
     id: 'akkan',
@@ -57,6 +81,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Akkan.webp'),
+    goldReward: {
+      Normal: 5400,
+      Hard: 7500
+    },
+    specialReward: {
+      Normal: 'images/rewards/Akkan-reward.webp',
+      Hard: 'images/rewards/Akkan-reward.webp'
+    }
   },
   {
     id: 'kayangel',
@@ -65,6 +97,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Kayangel.webp'),
+    goldReward: {
+      Normal: 3600,
+      Hard: 3800
+    },
+    specialReward: {
+      Normal: 'images/rewards/Kayangel-reward.webp',
+      Hard: 'images/rewards/Kayangel-reward.webp'
+    }
   },
   {
     id: 'thaemine',
@@ -73,6 +113,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Thaemine.webp'),
+    goldReward: {
+      Normal: 11000,
+      Hard: 18800
+    },
+    specialReward: {
+      Normal: 'images/rewards/Thaemine-reward.webp',
+      Hard: 'images/rewards/Thaemine-reward.webp'
+    }
   },
   {
     id: 'valtan',
@@ -81,6 +129,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Valtan.webp'),
+    goldReward: {
+      Normal: 750,
+      Hard: 1100
+    },
+    specialReward: {
+      Normal: 'images/rewards/Valtan-reward.webp',
+      Hard: 'images/rewards/Valtan-reward.webp'
+    }
   },
   {
     id: 'vykas',
@@ -89,6 +145,14 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Vykas.webp'),
+    goldReward: {
+      Normal: 1000,
+      Hard: 1500
+    },
+    specialReward: {
+      Normal: 'images/rewards/Vykas-reward.webp',
+      Hard: 'images/rewards/Vykas-reward.webp'
+    }
   },
   {
     id: 'behemoth',
@@ -97,6 +161,12 @@ export const raids = [
     difficulty: 'Normal',
     availableDifficulties: ['Normal'],
     image: getRaidImageUrl('images/raids/Behemoth.webp'),
+    goldReward: {
+      Normal: 18000
+    },
+    specialReward: {
+      Normal: 'images/rewards/Behemoth-reward.webp'
+    }
   },
   {
     id: 'voldis',
@@ -105,6 +175,14 @@ export const raids = [
     difficulty: 'Normal',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Voldis.webp'),
+    goldReward: {
+      Normal: 6500,
+      Hard: 13000
+    },
+    specialReward: {
+      Normal: 'images/rewards/Voldis-reward.webp',
+      Hard: 'images/rewards/Voldis-reward.webp'
+    }
   },
   {
     id: 'aegir',
@@ -113,6 +191,14 @@ export const raids = [
     difficulty: 'Normal',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Aegir.webp'),
+    goldReward: {
+      Normal: 23000,
+      Hard: 27500
+    },
+    specialReward: {
+      Normal: 'images/rewards/Aegir-reward.webp',
+      Hard: 'images/rewards/Aegir-reward.webp'
+    }
   },
   {
     id: 'brelshaza',
@@ -121,5 +207,13 @@ export const raids = [
     difficulty: 'Hard',
     availableDifficulties: ['Normal', 'Hard'],
     image: getRaidImageUrl('images/raids/Brelshaza1.webp'),
+    goldReward: {
+      Normal: 4600,
+      Hard: 5600
+    },
+    specialReward: {
+      Normal: 'images/rewards/Brelshaza1-reward.webp',
+      Hard: 'images/rewards/Brelshaza1-reward.webp'
+    }
   },
 ]; 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, memo } from 'react';
 
-// Memoizamos el componente para evitar renderizados innecesarios
+// Memoize component to prevent unnecessary re-renders
 const PixelButton = memo(({ 
   children, 
   onClick, 
@@ -21,13 +21,13 @@ const PixelButton = memo(({
   const animationRef = useRef(null);
   const frameRef = useRef(0);
   
-  // Colores basados en la variante
+  // Colors based on variant
   const colors = pixelColors[variant] || pixelColors.normal;
   
-  // Clases de sombra basadas en la variante
+  // Shadow classes based on variant
   const glowClass = variant === 'hard' ? 'shadow-pixel-glow-red' : 'shadow-pixel-glow-green';
   
-  // Efecto para medir el tamaño del botón
+  // Effect to measure button size
   useEffect(() => {
     const updateSize = () => {
       if (buttonRef.current) {
@@ -36,10 +36,10 @@ const PixelButton = memo(({
       }
     };
     
-    // Medir el tamaño inicial
+    // Measure initial size
     updateSize();
     
-    // Actualizar el tamaño si cambia la ventana
+    // Update size on window resize
     window.addEventListener('resize', updateSize);
     
     return () => {
@@ -50,7 +50,7 @@ const PixelButton = memo(({
     };
   }, []);
   
-  // Efecto para dibujar los píxeles cuando se hace hover
+  // Effect to draw pixels on hover
   useEffect(() => {
     if (!canvasRef.current || !isHovered || buttonSize.width === 0) return;
     
@@ -61,14 +61,14 @@ const PixelButton = memo(({
     canvas.width = buttonSize.width;
     canvas.height = buttonSize.height;
     
-    // Limpiar el canvas
+    // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Número de píxeles basado en el tamaño del botón y la densidad
+    // Number of pixels based on button size and density
     const pixelsX = Math.floor(buttonSize.width / pixelSize);
     const pixelsY = Math.floor(buttonSize.height / pixelSize);
     
-    // Crear una matriz de píxeles para evitar recalcular en cada frame
+    // Create pixel matrix to avoid recalculating each frame
     const pixels = [];
     for (let x = 0; x < pixelsX; x++) {
       for (let y = 0; y < pixelsY; y++) {
@@ -77,29 +77,29 @@ const PixelButton = memo(({
             x,
             y,
             color: colors[Math.floor(Math.random() * colors.length)],
-            phase: Math.random() * Math.PI * 2, // Fase aleatoria para animación
-            size: Math.random() * 2 + 1 // Tamaño aleatorio para variedad
+            phase: Math.random() * Math.PI * 2, // Random phase for animation
+            size: Math.random() * 2 + 1 // Random size for variety
           });
         }
       }
     }
     
-    // Función para animar los píxeles
+    // Function to animate pixels
     const animatePixels = () => {
       frameRef.current++;
       
-      // Limpiar el canvas en cada frame
+      // Clear canvas each frame
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Dibujar píxeles
+      // Draw pixels
       pixels.forEach(pixel => {
         const { x, y, color, phase, size } = pixel;
         
-        // Calcular la posición con un pequeño desplazamiento basado en el frame
+        // Calculate position with small offset based on frame
         const offsetX = Math.sin((frameRef.current * 0.1) + phase) * 2;
         const offsetY = Math.cos((frameRef.current * 0.1) + phase) * 2;
         
-        // Añadir un efecto de pulsación al tamaño
+        // Add pulse effect to size
         const pulseEffect = isPressed ? 0.8 : 1 + Math.sin(frameRef.current * 0.2 + phase) * 0.2;
         
         ctx.fillStyle = color;
@@ -111,13 +111,13 @@ const PixelButton = memo(({
         );
       });
       
-      // Continuar la animación si el botón sigue en hover
+      // Continue animation if button is still hovered
       if (isHovered) {
         animationRef.current = requestAnimationFrame(animatePixels);
       }
     };
     
-    // Iniciar la animación
+    // Start animation
     frameRef.current = 0;
     animatePixels();
     
@@ -159,7 +159,7 @@ const PixelButton = memo(({
   );
 });
 
-// Nombre para DevTools
+// Name for DevTools
 PixelButton.displayName = 'PixelButton';
 
-export default PixelButton; 
+export default PixelButton;

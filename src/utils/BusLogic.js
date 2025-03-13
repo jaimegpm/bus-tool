@@ -1,42 +1,30 @@
 /**
- * BusLogic.js
- * Contains all the logic for calculating gold distribution in different bus scenarios
- * Handles special cases like 1c7, 2c6, 5c3, 6c2, etc.
+ * Core logic for calculating gold distribution in raid buses
  */
 
 /**
- * Main function to calculate gold distribution between drivers
- * Handles different raid scenarios (1c7, 2c6, 5c3, 6c2, etc.)
- * Returns an array of distribution objects containing driver, buyer and gold amount
- * 
- * @param {number} totalPrice - The price each buyer pays
+ * Calculates how gold should be split between drivers based on raid configuration
+ * @param {number} totalPrice - Price per buyer
  * @param {number} driversCount - Number of drivers
  * @param {number} buyersCount - Number of buyers
- * @param {object} raid - Raid configuration object
- * @returns {Array} - Array of distribution objects
+ * @param {object} raid - Raid configuration
+ * @returns {Array} Distribution objects
  */
 export const calculateGoldDistribution = (totalPrice, driversCount, buyersCount, raid) => {
   if (driversCount <= 0 || buyersCount <= 0) return [];
   
-  // Total income and equal gold per driver
   const totalIncome = totalPrice * buyersCount;
   const goldPerDriver = Math.floor(totalIncome / driversCount);
   
-  // Create the distribution plan
   const distribution = [];
   
-  // Track how much gold each driver has received
   const driverGold = {};
   for (let i = 1; i <= driversCount; i++) {
     driverGold[i] = 0;
   }
   
-  // Special handling for 1c7 scenario (8 player raid with 1 driver)
+  // 1 driver, 7 buyers
   if (driversCount === 1 && buyersCount === 7 && raid.totalPlayers === 8) {
-    // Separar por parties para mejor visualización
-    // Party 1: driver 1 + 3 buyers (n2, n3, n4)
-    // Party 2: 4 buyers (n1, n2, n3, n4)
-    
     distribution.push({ 
       driver: 1, 
       buyer: "all buyers n2-n4 (party 1)", 
@@ -51,116 +39,74 @@ export const calculateGoldDistribution = (totalPrice, driversCount, buyersCount,
       isGrouped: true
     });
     
-    driverGold[1] += totalPrice * 7; // Total sigue siendo 7 buyers
+    driverGold[1] += totalPrice * 7;
   }
-  // Special handling for 2c6 scenario (8 player raid with 2 drivers)
+  // 2 drivers, 6 buyers
   else if (driversCount === 2 && buyersCount === 6 && raid.totalPlayers === 8) {
-    // Distribución específica para 2c6
-    // Party 1: d1, d2, n3, n4
-    // Party 2: n1, n2, n3, n4
-    
-    // Driver 1 recibe pagos de:
-    // - n3 y n4 de party 1
-    // - n1 de party 2
     distribution.push({ driver: 1, buyer: "n3 (party 1)", gold: totalPrice });
     distribution.push({ driver: 1, buyer: "n4 (party 1)", gold: totalPrice });
     distribution.push({ driver: 1, buyer: "n1 (party 2)", gold: totalPrice });
     driverGold[1] += totalPrice * 3;
     
-    // Driver 2 recibe pagos de:
-    // - n2, n3 y n4 de party 2
     distribution.push({ driver: 2, buyer: "n2 (party 2)", gold: totalPrice });
     distribution.push({ driver: 2, buyer: "n3 (party 2)", gold: totalPrice });
     distribution.push({ driver: 2, buyer: "n4 (party 2)", gold: totalPrice });
     driverGold[2] += totalPrice * 3;
   }
-  // Special handling for 5c3 scenario (8 player raid with 5 drivers)
+  // 5 drivers, 3 buyers
   else if (driversCount === 5 && buyersCount === 3 && raid.totalPlayers === 8) {
-    // Distribución específica para 5c3
-    // Party 1: d1, d2, d3, d4
-    // Party 2: d5, n2, n3, n4
+    const fullAmount = Math.floor(totalPrice * 0.4);
+    const halfAmount = Math.floor(totalPrice * 0.2);
     
-    // Calculamos los montos parciales (40% y 20% del precio)
-    const fullAmount = Math.floor(totalPrice * 0.4); // 40% del precio
-    const halfAmount = Math.floor(totalPrice * 0.2); // 20% del precio
-    
-    // Distribución según tabla proporcionada
-    // D1 recibe 40% de N2 y 20% de N3
     distribution.push({ driver: 1, buyer: "n2 (party 2)", gold: fullAmount });
     distribution.push({ driver: 1, buyer: "n3 (party 2)", gold: halfAmount });
     driverGold[1] += fullAmount + halfAmount;
     
-    // D2 recibe 40% de N2 y 20% de N4
     distribution.push({ driver: 2, buyer: "n2 (party 2)", gold: fullAmount });
     distribution.push({ driver: 2, buyer: "n4 (party 2)", gold: halfAmount });
     driverGold[2] += fullAmount + halfAmount;
     
-    // D3 recibe 40% de N3 y 20% de N4
     distribution.push({ driver: 3, buyer: "n3 (party 2)", gold: fullAmount });
     distribution.push({ driver: 3, buyer: "n4 (party 2)", gold: halfAmount });
     driverGold[3] += fullAmount + halfAmount;
     
-    // D4 recibe 20% de N2 y 40% de N4
     distribution.push({ driver: 4, buyer: "n2 (party 2)", gold: halfAmount });
     distribution.push({ driver: 4, buyer: "n4 (party 2)", gold: fullAmount });
     driverGold[4] += halfAmount + fullAmount;
     
-    // D5 recibe 20% de N3 y 40% de N4
     distribution.push({ driver: 5, buyer: "n3 (party 2)", gold: halfAmount });
     distribution.push({ driver: 5, buyer: "n4 (party 2)", gold: fullAmount });
     driverGold[5] += halfAmount + fullAmount;
   }
-  // Special handling for 6c2 scenario (8 player raid with 6 drivers)
+  // 6 drivers, 2 buyers
   else if (driversCount === 6 && buyersCount === 2 && raid.totalPlayers === 8) {
-    // Distribución específica para 6c2
-    // Party 1: d1, d2, d3, d4
-    // Party 2: d5, d6, n3, n4
-    
-    // Distribución solicitada:
-    // d1, d2, d3 venden a n3 (party 2)
-    // d4, d5, d6 venden a n4 (party 2)
-    
-    // Calculamos el monto que cada buyer paga a cada driver (1/3 del precio total)
     const driverShare = Math.floor(totalPrice / 3);
-    // Ajuste para asegurar que la suma sea exactamente el precio total
     const remainder = totalPrice - (driverShare * 3);
     
-    // Los conductores d1, d2, d3 reciben del comprador n3 (party 2)
     distribution.push({ driver: 1, buyer: "n3 (party 2)", gold: driverShare });
     driverGold[1] += driverShare;
     
     distribution.push({ driver: 2, buyer: "n3 (party 2)", gold: driverShare });
     driverGold[2] += driverShare;
     
-    // El último conductor recibe el resto para asegurar que sume exactamente el precio total
     distribution.push({ driver: 3, buyer: "n3 (party 2)", gold: driverShare + remainder });
     driverGold[3] += driverShare + remainder;
     
-    // Los conductores d4, d5, d6 reciben del comprador n4 (party 2)
     distribution.push({ driver: 4, buyer: "n4 (party 2)", gold: driverShare });
     driverGold[4] += driverShare;
     
     distribution.push({ driver: 5, buyer: "n4 (party 2)", gold: driverShare });
     driverGold[5] += driverShare;
     
-    // El último conductor recibe el resto para asegurar que sume exactamente el precio total
     distribution.push({ driver: 6, buyer: "n4 (party 2)", gold: driverShare + remainder });
     driverGold[6] += driverShare + remainder;
   }
-  // Special handling for 7c1 scenario (8 player raid with 7 drivers)
+  // 7 drivers, 1 buyer
   else if (driversCount === 7 && buyersCount === 1 && raid.totalPlayers === 8) {
-    // Distribución específica para 7c1
-    // Party 1: d1, d2, d3, d4
-    // Party 2: d5, d6, d7, n4
-    
-    // Calculamos el monto que cada driver recibe (1/7 del precio total)
     const driverShare = Math.floor(totalPrice / 7);
-    // Ajuste para asegurar que la suma sea exactamente el precio total
     const remainder = totalPrice - (driverShare * 7);
     
-    // Distribuimos el oro entre los 7 conductores
     for (let i = 1; i <= 7; i++) {
-      // El último conductor recibe el resto para asegurar que sume exactamente el precio total
       const goldAmount = (i === 7) ? driverShare + remainder : driverShare;
       
       distribution.push({ 
@@ -172,42 +118,29 @@ export const calculateGoldDistribution = (totalPrice, driversCount, buyersCount,
       driverGold[i] += goldAmount;
     }
   }
-  // Special handling for 3c5 scenario (8 player raid with 3 drivers)
+  // 3 drivers, 5 buyers
   else if (driversCount === 3 && buyersCount === 5 && raid.totalPlayers === 8) {
-    // Distribución específica para 3c5
-    // Party 1: d1, d2, d3, n4
-    // Party 2: n1, n2, n3, n4
-    
-    // Primero, asignamos los buyers completos
-    // Driver 1 recibe de n1 party2
     distribution.push({ driver: 1, buyer: "n1 (party 2)", gold: totalPrice });
     driverGold[1] += totalPrice;
     
-    // Driver 2 recibe de n2 party2
     distribution.push({ driver: 2, buyer: "n2 (party 2)", gold: totalPrice });
     driverGold[2] += totalPrice;
     
-    // Driver 3 recibe de n3 party2
     distribution.push({ driver: 3, buyer: "n3 (party 2)", gold: totalPrice });
     driverGold[3] += totalPrice;
     
-    // Ahora distribuimos los n4 de ambas parties
-    // Calculamos cuánto falta a cada driver para llegar al gold per driver
     const remainingNeeded1 = goldPerDriver - driverGold[1];
     const remainingNeeded2 = goldPerDriver - driverGold[2];
     const remainingNeeded3 = goldPerDriver - driverGold[3];
     
-    // Driver 1 recibe parte de n4 party1
     const d1FromN4P1 = remainingNeeded1;
     distribution.push({ driver: 1, buyer: "n4 (party 1)", gold: d1FromN4P1 });
     driverGold[1] += d1FromN4P1;
     
-    // Driver 2 recibe parte de n4 party2
     const d2FromN4P2 = remainingNeeded2;
     distribution.push({ driver: 2, buyer: "n4 (party 2)", gold: d2FromN4P2 });
     driverGold[2] += d2FromN4P2;
     
-    // Driver 3 recibe el resto de n4 party1 y n4 party2
     const d3FromN4P1 = totalPrice - d1FromN4P1;
     const d3FromN4P2 = totalPrice - d2FromN4P2;
     
@@ -217,37 +150,30 @@ export const calculateGoldDistribution = (totalPrice, driversCount, buyersCount,
     distribution.push({ driver: 3, buyer: "n4 (party 2)", gold: d3FromN4P2 });
     driverGold[3] += d3FromN4P2;
   }
-  // Special handling for 4-player raid scenarios
+  // 4-player raid scenarios
   else if (raid.totalPlayers === 4) {
-    // 1c3 scenario (1 driver, 3 buyers)
+    // 1 driver, 3 buyers
     if (driversCount === 1 && buyersCount === 3) {
-      // En 1c3, el único driver recibe de todos los compradores
       distribution.push({ driver: 1, buyer: "n2", gold: totalPrice });
       distribution.push({ driver: 1, buyer: "n3", gold: totalPrice });
       distribution.push({ driver: 1, buyer: "n4", gold: totalPrice });
       
       driverGold[1] += totalPrice * 3;
     }
-    // 2c2 scenario (2 drivers, 2 buyers)
+    // 2 drivers, 2 buyers
     else if (driversCount === 2 && buyersCount === 2) {
-      // En 2c2, cada driver recibe de un comprador
       distribution.push({ driver: 1, buyer: "n3", gold: totalPrice });
       driverGold[1] += totalPrice;
       
       distribution.push({ driver: 2, buyer: "n4", gold: totalPrice });
       driverGold[2] += totalPrice;
     }
-    // 3c1 scenario (3 drivers, 1 buyer)
+    // 3 drivers, 1 buyer
     else if (driversCount === 3 && buyersCount === 1) {
-      // En 3c1, los tres drivers reciben del único comprador
-      // Calculamos la parte equitativa para cada driver
       const driverShare = Math.floor(totalPrice / 3);
-      // Ajuste para asegurar que la suma sea exactamente el precio total
       const remainder = totalPrice - (driverShare * 3);
       
-      // Distribuimos el oro entre los 3 conductores
       for (let i = 1; i <= 3; i++) {
-        // El último conductor recibe el resto para asegurar que sume exactamente el precio total
         const goldAmount = (i === 3) ? driverShare + remainder : driverShare;
         
         distribution.push({ 
@@ -259,12 +185,12 @@ export const calculateGoldDistribution = (totalPrice, driversCount, buyersCount,
         driverGold[i] += goldAmount;
       }
     }
-    // Generic algorithm for other 4-player scenarios (fallback)
+    // Generic 4-player distribution
     else {
       distribution.push(...handleGenericDistribution(totalPrice, driversCount, buyersCount, goldPerDriver, driverGold, 4));
     }
   }
-  // Generic algorithm for other scenarios
+  // Generic distribution for other scenarios
   else {
     distribution.push(...handleGenericDistribution(totalPrice, driversCount, buyersCount, goldPerDriver, driverGold, raid.totalPlayers));
   }
@@ -273,33 +199,20 @@ export const calculateGoldDistribution = (totalPrice, driversCount, buyersCount,
 };
 
 /**
- * Helper function to handle generic distribution for scenarios without special handling
- * 
- * @param {number} totalPrice - The price each buyer pays
- * @param {number} driversCount - Number of drivers
- * @param {number} buyersCount - Number of buyers
- * @param {number} goldPerDriver - Target gold amount per driver
- * @param {object} driverGold - Object tracking gold received by each driver
- * @param {number} totalPlayers - Total number of players in the raid
- * @returns {Array} - Array of distribution objects
+ * Handles gold distribution for non-standard raid configurations
  */
 const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPerDriver, driverGold, totalPlayers) => {
   const distribution = [];
   
-  // Track buyers by party
   const party1Buyers = [];
   const party2Buyers = [];
   
-  // Assign buyers to parties (cada party tiene 4 posiciones)
-  // Primero identificamos cuántos drivers van en cada party
   let drivers1 = Math.min(driversCount, 4);
   let drivers2 = driversCount - drivers1;
   
-  // Calculamos cuántos buyers hay en cada party
   let buyers1 = 4 - drivers1;
   let buyers2 = 4 - drivers2;
   
-  // Asignamos los IDs de los compradores
   for (let i = 1; i <= buyers1; i++) {
     party1Buyers.push(i + drivers1);
   }
@@ -308,15 +221,11 @@ const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPe
     party2Buyers.push(i + drivers2);
   }
   
-  // First assign party 2 buyers to party 2 drivers if possible, otherwise distribute among all drivers
   for (let i = 0; i < party2Buyers.length; i++) {
-    // Si hay drivers en party 2, asignar preferentemente a ellos
     let driverId;
     if (drivers2 > 0 && i < drivers2) {
-      // Asignar a los drivers de party 2 (los últimos)
       driverId = driversCount - drivers2 + i + 1;
     } else {
-      // Asignar a cualquier driver, priorizando los que tienen menos oro
       const driverEntries = Object.entries(driverGold)
         .sort((a, b) => a[1] - b[1]);
       driverId = parseInt(driverEntries[0][0]);
@@ -333,16 +242,13 @@ const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPe
     driverGold[driverId] += totalPrice;
   }
   
-  // Track remaining buyers' payments
   const buyerPayments = {};
   party1Buyers.forEach(id => {
     buyerPayments[id] = 0;
   });
   
-  // Distribute party 1 buyers to balance gold
   let currentBuyerIndex = 0;
   
-  // Keep distributing until all drivers have their gold or all buyers have paid
   while (Object.values(driverGold).some(gold => gold < goldPerDriver) && 
          currentBuyerIndex < party1Buyers.length) {
     
@@ -354,7 +260,6 @@ const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPe
       continue;
     }
     
-    // Find driver with least gold
     const driverEntries = Object.entries(driverGold)
       .sort((a, b) => a[1] - b[1]);
     
@@ -362,10 +267,9 @@ const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPe
     const driverNeedsMore = goldPerDriver - gold;
     
     if (driverNeedsMore <= 0) {
-      break; // All drivers have their gold
+      break;
     }
     
-    // Determine how much this driver should get from this buyer
     const amountToAssign = Math.min(driverNeedsMore, buyerRemainingPayment);
     
     if (amountToAssign > 0) {
@@ -378,7 +282,6 @@ const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPe
       driverGold[driverId] += amountToAssign;
       buyerPayments[buyerId] += amountToAssign;
       
-      // If buyer has paid in full, move to next buyer
       if (buyerPayments[buyerId] >= totalPrice) {
         currentBuyerIndex++;
       }
@@ -389,15 +292,9 @@ const handleGenericDistribution = (totalPrice, driversCount, buyersCount, goldPe
 };
 
 /**
- * Helper functions for formatting and styling
+ * Utility functions for formatting and styling
  */
 
-/**
- * Format gold values with locale-specific formatting
- * 
- * @param {number} value - Gold amount to format
- * @returns {string} - Formatted gold amount
- */
 export const formatGold = (value) => {
   return value.toLocaleString('en-US', { 
     minimumFractionDigits: 0,
@@ -405,12 +302,6 @@ export const formatGold = (value) => {
   });
 };
 
-/**
- * Get color scheme for a driver based on driver number
- * 
- * @param {number} driverNumber - Driver number (1-7)
- * @returns {object} - Object with CSS classes for styling
- */
 export const getDriverColor = (driverNumber) => {
   const colors = {
     1: { 
@@ -473,12 +364,6 @@ export const getDriverColor = (driverNumber) => {
   };
 };
 
-/**
- * Get color scheme for a buyer based on party
- * 
- * @param {string} buyerText - Buyer text that may include party information
- * @returns {object} - Object with CSS classes for styling
- */
 export const getBuyerPartyIndicator = (buyerText) => {
   if (buyerText.includes('party 1')) {
     return { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-800 dark:text-cyan-300' };
