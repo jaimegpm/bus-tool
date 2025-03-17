@@ -11,7 +11,11 @@ export default function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredRaid, setHoveredRaid] = useState(null);
-  const [selectedRaid, setSelectedRaid] = useState(null);
+  const [modalState, setModalState] = useState({
+    selectedRaid: null,
+    isVisible: false,
+    position: { top: 0 }
+  });
   const difficultyModalRef = useRef(null);
   
   // Handle raid preselection from URL
@@ -22,7 +26,15 @@ export default function HomePage() {
     if (preselectedRaidId) {
       const raid = raids.find(r => r.id === preselectedRaidId);
       if (raid && raid.availableDifficulties.length > 1) {
-        setSelectedRaid(raid);
+        // Calcular la posición del modal
+        const scrollY = window.scrollY;
+        const viewportHeight = window.innerHeight;
+        
+        setModalState({
+          selectedRaid: raid,
+          isVisible: true,
+          position: { top: scrollY + viewportHeight * 0.4 }
+        });
         
         // Clear URL parameter without page reload
         const newUrl = window.location.pathname;
@@ -39,7 +51,7 @@ export default function HomePage() {
       }
     }
     
-    if (selectedRaid) {
+    if (modalState.isVisible) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -48,7 +60,7 @@ export default function HomePage() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [selectedRaid]);
+  }, [modalState.isVisible]);
   
   // Handle raid selection and navigation
   const handleRaidSelect = (raid) => {
@@ -57,39 +69,50 @@ export default function HomePage() {
       return;
     }
     
-    setSelectedRaid(raid);
+    // Calcular la posición exacta del modal y establecer todo en un solo estado
+    const scrollY = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    
+    setModalState({
+      selectedRaid: raid,
+      isVisible: true,
+      position: { top: scrollY + viewportHeight * 0.4 }
+    });
   };
   
   // Handle difficulty selection from modal
   const handleDifficultySelect = (difficulty) => {
-    navigate(`/raid/${selectedRaid.id}?difficulty=${difficulty}`);
+    navigate(`/raid/${modalState.selectedRaid.id}?difficulty=${difficulty}`);
     closeModal();
   };
   
   const closeModal = () => {
-    setSelectedRaid(null);
+    setModalState(prevState => ({
+      ...prevState,
+      isVisible: false
+    }));
   };
   
   return (
-    <div className="max-w-5xl mx-auto text-center">
+    <div className="w-full mx-auto text-center px-4 sm:px-0">
       {/* Page header section */}
-      <section className="mb-12">
-        <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 animate-fade-in">
+      <section className="mb-8 sm:mb-12">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 animate-fade-in">
           Lost Ark Bus Calculator
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto animate-slide-up">
+        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto animate-slide-up">
           Select a raid, configure settings and get optimal gold distribution for your group.
         </p>
       </section>
       
       {/* Raid selection grid */}
       <section className="animate-scale-in">
-        <h2 className="text-2xl font-semibold mb-6">Select a Raid</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Select a Raid</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {raids.map((raid) => (
-            <div
+            <div 
               key={raid.id}
-              className={`p-5 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 relative overflow-hidden bg-white dark:bg-gray-800 will-change-transform ${
+              className={`p-4 sm:p-5 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 relative overflow-hidden bg-white dark:bg-gray-800 will-change-transform ${
                 hoveredRaid === raid.id 
                   ? 'shadow-[0_10px_20px_-10px_rgba(59,130,246,0.3),0_0_8px_rgba(59,130,246,0.2)] dark:shadow-[0_10px_20px_-10px_rgba(29,78,216,0.4),0_0_8px_rgba(29,78,216,0.3)]' 
                   : 'shadow-[0_4px_10px_rgba(0,0,0,0.05),0_1px_3px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_8px_rgba(0,0,0,0.3)]'
@@ -110,7 +133,7 @@ export default function HomePage() {
               
               <div className="flex flex-col items-center relative z-10">
                 {/* Raid image container */}
-                <div className={`w-28 h-28 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mb-4 ${
+                <div className={`w-20 h-20 sm:w-28 sm:h-28 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mb-3 sm:mb-4 ${
                   hoveredRaid === raid.id ? 'animate-float shadow-md' : 'shadow-sm'
                 } transition-shadow duration-300`}>
                   {raid.image ? (
@@ -133,14 +156,14 @@ export default function HomePage() {
                 </div>
                 
                 {/* Raid name */}
-                <h3 className={`font-medium text-lg mb-1 transition-colors duration-300 ${
+                <h3 className={`font-medium text-base sm:text-lg mb-1 transition-colors duration-300 ${
                   hoveredRaid === raid.id ? 'text-blue-600 dark:text-blue-400' : ''
                 }`}>
                   {raid.name}
                 </h3>
                 
                 {/* Raid details */}
-                <div className="flex items-center mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                   <span className="mr-3">{raid.totalPlayers} players</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs ${
                     raid.difficulty === 'Hard' 
@@ -166,36 +189,43 @@ export default function HomePage() {
         </div>
       </section>
       
-      {/* Difficulty selection modal */}
-      {selectedRaid && (
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 animate-fade-in backdrop-blur-sm will-change-transform">
+      {/* Difficulty selection modal - Solo se muestra cuando isVisible es true */}
+      {modalState.isVisible && modalState.selectedRaid && (
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 backdrop-blur-sm p-4">
           <div 
             ref={difficultyModalRef}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4 animate-scale-in will-change-transform"
-            style={{ transform: 'translateZ(0)' }}
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md mx-auto"
+            style={{ 
+              position: 'absolute',
+              top: `${modalState.position.top}px`,
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
           >
             {/* Modal header with raid info */}
-            <div className="flex items-center mb-6">
-              {selectedRaid.image && (
-                <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mr-4">
+            <div className="flex items-center mb-4 sm:mb-6">
+              {modalState.selectedRaid.image && (
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center mr-3 sm:mr-4">
                   <OptimizedImage 
-                    src={selectedRaid.image} 
-                    alt={selectedRaid.name}
+                    src={modalState.selectedRaid.image} 
+                    alt={modalState.selectedRaid.name}
                     width={64}
                     height={64}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.parentNode.innerHTML = `<span class="text-2xl font-bold text-gray-500 dark:text-gray-400">${selectedRaid.name.charAt(0)}</span>`;
+                      e.target.parentNode.innerHTML = `<span class="text-2xl font-bold text-gray-500 dark:text-gray-400">${modalState.selectedRaid.name.charAt(0)}</span>`;
                     }}
                   />
                 </div>
               )}
               <div>
-                <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                  {selectedRaid.name}
+                <h3 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                  {modalState.selectedRaid.name}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  {selectedRaid.totalPlayers} players
+                <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                  {modalState.selectedRaid.totalPlayers} players
                 </p>
               </div>
               
@@ -211,11 +241,11 @@ export default function HomePage() {
               </button>
             </div>
             
-            <h4 className="text-lg font-medium mb-4 text-center">Select Difficulty</h4>
+            <h4 className="text-base sm:text-lg font-medium mb-3 sm:mb-4 text-center">Select Difficulty</h4>
             
             {/* Difficulty options grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {selectedRaid.availableDifficulties.map((difficulty) => {
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              {modalState.selectedRaid.availableDifficulties.map((difficulty) => {
                 const isHard = difficulty === 'Hard';
                 const colors = isHard 
                   ? '#EF4444,#DC2626,#B91C1C' 

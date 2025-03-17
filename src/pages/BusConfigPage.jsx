@@ -97,12 +97,12 @@ export default function BusConfigPage() {
   if (!raid) return null;
   
   return (
-    <div className="space-y-8 max-w-3xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 w-full mx-auto px-4 sm:px-0 max-w-3xl">
       {/* Back to raids button */}
-      <div className={`flex items-center mb-6 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`flex items-center mb-4 sm:mb-6 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div 
           onClick={() => navigate('/')}
-          className="pixel-card difficulty-button relative p-3 rounded-lg border-2 border-blue-300 dark:border-blue-700 transition-all duration-150 flex items-center cursor-pointer active:scale-95 will-change-transform overflow-hidden gpu-accelerated bg-blue-50 dark:bg-blue-900/10"
+          className="pixel-card difficulty-button relative p-2 sm:p-3 rounded-lg border-2 border-blue-300 dark:border-blue-700 transition-all duration-150 flex items-center cursor-pointer active:scale-95 will-change-transform overflow-hidden gpu-accelerated bg-blue-50 dark:bg-blue-900/10"
         >
           <pixel-canvas 
             data-colors="#3B82F6,#2563EB,#1D4ED8"
@@ -111,10 +111,10 @@ export default function BusConfigPage() {
           ></pixel-canvas>
           
           <div className="difficulty-button-content relative z-10 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
-            <span className="font-medium text-blue-800 dark:text-blue-300">
+            <span className="font-medium text-sm sm:text-base text-blue-800 dark:text-blue-300">
               Back to Raids
             </span>
           </div>
@@ -122,7 +122,7 @@ export default function BusConfigPage() {
       </div>
       
       {/* Raid header section */}
-      <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8 transition-all duration-500 ${isLoaded ? 'animate-scale-in' : 'opacity-0 scale-95'}`}>
+      <div className={`bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md mb-6 sm:mb-8 transition-all duration-500 ${isLoaded ? 'animate-scale-in' : 'opacity-0 scale-95'}`}>
         <BusHeader
           raid={raid}
           difficultyMenuRef={difficultyMenuRef}
@@ -136,7 +136,7 @@ export default function BusConfigPage() {
       
       {/* Configuration section */}
       <section className={`transition-all duration-500 delay-100 ${isLoaded ? 'animate-slide-up' : 'opacity-0 translate-y-4'}`}>
-        <h2 className="text-2xl font-semibold mb-4">Configure Bus</h2>
+        <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Configure Bus</h2>
         <BusConfig raid={raid} onConfigChange={handleConfigChange} />
       </section>
       

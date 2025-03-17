@@ -47,9 +47,9 @@ export default function MainLayout({ children }) {
   
   return (
     <div className="flex justify-center w-full bg-black">
-      <div className="relative min-h-screen min-w-[1800px] max-w-[1800px] flex flex-col bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 will-change-transform border border-gray-300/30 dark:border-blue-600/20 rounded-md shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_6px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.15),0_10px_15px_-3px_rgba(59,130,246,0.15)] dark:shadow-[0_0_20px_rgba(0,0,0,0.5),0_0_10px_rgba(59,130,246,0.25),0_5px_10px_-3px_rgba(29,78,216,0.2)]">
+      <div className="relative min-h-screen w-full max-w-[1800px] flex flex-col bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 will-change-transform border border-gray-300/30 dark:border-blue-600/20 rounded-md shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_6px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.15),0_10px_15px_-3px_rgba(59,130,246,0.15)] dark:shadow-[0_0_20px_rgba(0,0,0,0.5),0_0_10px_rgba(59,130,246,0.25),0_5px_10px_-3px_rgba(29,78,216,0.2)]">
         <header className={`${scrolled ? 'bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-md' : 'bg-white dark:bg-gray-800 shadow-sm'} sticky top-0 z-10 transition-all duration-300 gpu-accelerated`}>
-          <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
                 <Link to="/" className="flex items-center group">
@@ -121,15 +121,15 @@ export default function MainLayout({ children }) {
         </header>
         
         {/* Main content area */}
-        <main className={`flex-grow py-8 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'} gpu-accelerated`}>
-          <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
+        <main className={`flex-grow py-8 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'} gpu-accelerated overflow-x-auto`}>
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             {children}
           </div>
         </main>
         
         {/* Footer section */}
         <footer className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-inner mt-auto">
-          <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="text-center text-sm text-gray-500 dark:text-gray-400">
               <p className="animate-float">Lost Ark Bus Tool - Not affiliated with Amazon Games or Smilegate RPG</p>
               <p className="mt-1">Created for the Lost Ark community</p>
