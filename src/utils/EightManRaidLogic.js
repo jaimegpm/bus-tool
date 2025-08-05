@@ -91,28 +91,25 @@ export const calculateEightManDistribution = (totalPrice, driversCount, buyersCo
   }
   // 5 drivers, 3 buyers
   else if (driversCount === 5 && buyersCount === 3) {
-    const fullAmount = Math.floor(totalPrice * 0.4);
-    const halfAmount = Math.floor(totalPrice * 0.2);
+
+    const goldPerDriver = Math.floor(totalPrice * buyersCount / driversCount);
     
-    distribution.push({ driver: 1, buyer: "n2 (party 2)", gold: fullAmount });
-    distribution.push({ driver: 1, buyer: "n3 (party 2)", gold: halfAmount });
-    driverGold[1] += fullAmount + halfAmount;
+    distribution.push({ driver: 1, buyer: "n2 (party 2)", gold: Math.floor(totalPrice * 0.4) });
+    distribution.push({ driver: 1, buyer: "n4 (party 2)", gold: Math.floor(totalPrice * 0.2) });
+    driverGold[1] += Math.floor(totalPrice * 0.6);
     
-    distribution.push({ driver: 2, buyer: "n2 (party 2)", gold: fullAmount });
-    distribution.push({ driver: 2, buyer: "n4 (party 2)", gold: halfAmount });
-    driverGold[2] += fullAmount + halfAmount;
+    distribution.push({ driver: 2, buyer: "n2 (party 2)", gold: Math.floor(totalPrice * 0.6) });
+    driverGold[2] += Math.floor(totalPrice * 0.6);
     
-    distribution.push({ driver: 3, buyer: "n3 (party 2)", gold: fullAmount });
-    distribution.push({ driver: 3, buyer: "n4 (party 2)", gold: halfAmount });
-    driverGold[3] += fullAmount + halfAmount;
+    distribution.push({ driver: 3, buyer: "n3 (party 2)", gold: Math.floor(totalPrice * 0.6) });
+    driverGold[3] += Math.floor(totalPrice * 0.6);
     
-    distribution.push({ driver: 4, buyer: "n2 (party 2)", gold: halfAmount });
-    distribution.push({ driver: 4, buyer: "n4 (party 2)", gold: fullAmount });
-    driverGold[4] += halfAmount + fullAmount;
+    distribution.push({ driver: 4, buyer: "n4 (party 2)", gold: Math.floor(totalPrice * 0.6) });
+    driverGold[4] += Math.floor(totalPrice * 0.6);
     
-    distribution.push({ driver: 5, buyer: "n3 (party 2)", gold: halfAmount });
-    distribution.push({ driver: 5, buyer: "n4 (party 2)", gold: fullAmount });
-    driverGold[5] += halfAmount + fullAmount;
+    distribution.push({ driver: 5, buyer: "n3 (party 2)", gold: Math.floor(totalPrice * 0.4) });
+    distribution.push({ driver: 5, buyer: "n4 (party 2)", gold: Math.floor(totalPrice * 0.2) });
+    driverGold[5] += Math.floor(totalPrice * 0.6);
   }
   // 6 drivers, 2 buyers
   else if (driversCount === 6 && buyersCount === 2) {
