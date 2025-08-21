@@ -5,6 +5,7 @@ import BusConfig from '../components/BusConfig';
 import OptimizedImage from '../components/OptimizedImage';
 import BusDetails from '../components/bus/BusDetails';
 import BusHeader from '../components/bus/BusHeader';
+import ConfigTabs from '../components/bus/ConfigTabs';
 import '../components/PixelCanvas.css';
 
 /**
@@ -19,6 +20,8 @@ export default function BusConfigPage() {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [difficultyMenuOpen, setDifficultyMenuOpen] = useState(false);
+  const [activePresetId, setActivePresetId] = useState(null);
+  const [presetConfig, setPresetConfig] = useState(null);
   const difficultyMenuRef = useRef(null);
   
   // Initialize raid data and difficulty
@@ -93,6 +96,27 @@ export default function BusConfigPage() {
     }
     setDifficultyMenuOpen(false);
   };
+
+  // Handle preset selection
+  const handlePresetSelected = useCallback((preset) => {
+    if (preset === null) {
+      // Clear preset selection (manual mode)
+      setActivePresetId(null);
+      setPresetConfig(null);
+      return;
+    }
+    
+    setActivePresetId(preset.id);
+    setPresetConfig(preset);
+  }, []);
+
+  // Handle preset config changes (when user modifies manual settings)
+  const handlePresetConfigChange = useCallback((config) => {
+    if (config === null) {
+      setActivePresetId(null);
+      setPresetConfig(null);
+    }
+  }, []);
   
   if (!raid) return null;
   
@@ -136,8 +160,27 @@ export default function BusConfigPage() {
       
       {/* Configuration section */}
       <section className={`transition-all duration-500 delay-100 ${isLoaded ? 'animate-slide-up' : 'opacity-0 translate-y-4'}`}>
-        <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Configure Bus</h2>
-        <BusConfig raid={raid} onConfigChange={handleConfigChange} />
+        {/* Configuration tabs */}
+        <ConfigTabs 
+          raid={raid}
+          onPresetSelected={handlePresetSelected}
+          activePresetId={activePresetId}
+        />
+        
+        {/* Configure Bus with integrated styling */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border-t-0 rounded-t-none">
+          <div className="px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100">Configure Bus</h2>
+          </div>
+          <div className="p-4 sm:p-6">
+            <BusConfig 
+              raid={raid} 
+              onConfigChange={handleConfigChange}
+              presetConfig={presetConfig}
+              onPresetConfigChange={handlePresetConfigChange}
+            />
+          </div>
+        </div>
       </section>
       
       {/* Configuration summary */}

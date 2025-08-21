@@ -2,6 +2,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { raids } from '../data/raids';
 import OptimizedImage from '../components/OptimizedImage';
+import { StorageManager } from '../utils/storage';
+import PresetCreationModal from '../components/PresetCreationModal';
 import '../components/PixelCanvas.css';
 
 /**
@@ -16,7 +18,19 @@ export default function HomePage() {
     isVisible: false,
     position: { top: 0 }
   });
+  const [favorites, setFavorites] = useState([]);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [presetModalState, setPresetModalState] = useState({
+    isOpen: false,
+    selectedRaid: null
+  });
   const difficultyModalRef = useRef(null);
+  
+  // Load favorites and preferences from localStorage
+  useEffect(() => {
+    setFavorites(StorageManager.getFavorites());
+    setShowFavoritesOnly(StorageManager.getShowFavoritesOnly());
+  }, []);
   
   // Handle raid preselection from URL
   useEffect(() => {
@@ -92,9 +106,53 @@ export default function HomePage() {
       isVisible: false
     }));
   };
+
+  // Handle favorite toggle
+  const toggleFavorite = (raidId, event) => {
+    event.stopPropagation(); // Prevent raid selection when clicking star
+    const newFavoriteStatus = StorageManager.toggleFavorite(raidId);
+    setFavorites(StorageManager.getFavorites());
+  };
+
+  // Handle preset modal open
+  const openPresetModal = (raid, event) => {
+    event.stopPropagation(); // Prevent raid selection when clicking gear
+    setPresetModalState({
+      isOpen: true,
+      selectedRaid: raid
+    });
+  };
+
+  // Handle preset modal close
+  const closePresetModal = () => {
+    setPresetModalState({
+      isOpen: false,
+      selectedRaid: null
+    });
+  };
+
+  // Handle show favorites only toggle
+  const toggleShowFavoritesOnly = () => {
+    const newValue = !showFavoritesOnly;
+    setShowFavoritesOnly(newValue);
+    StorageManager.setShowFavoritesOnly(newValue);
+  };
+
+  // Filter raids based on favorites preference
+  const filteredRaids = showFavoritesOnly 
+    ? raids.filter(raid => favorites.includes(raid.id))
+    : raids;
+
+  // Handle preset creation success
+  const handlePresetCreated = (preset) => {
+    // Could show a success toast here
+    console.log('Preset created:', preset);
+  };
   
   return (
     <div className="w-full mx-auto text-center px-4 sm:px-0">
+
+
       {/* Page header section */}
       <section className="mb-8 sm:mb-12">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 animate-fade-in">
@@ -107,9 +165,65 @@ export default function HomePage() {
       
       {/* Raid selection grid */}
       <section className="animate-scale-in">
-        <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Select a Raid</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-0">Select a Raid</h2>
+          
+          {/* Favorites filter toggle */}
+          <div className="flex items-center">
+            <label className="flex items-center cursor-pointer group">
+              <span className="text-sm text-gray-600 dark:text-gray-400 mr-3">
+                Show favorites only
+              </span>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={showFavoritesOnly}
+                  onChange={toggleShowFavoritesOnly}
+                  className="sr-only"
+                />
+                <div className={`w-10 h-5 sm:w-11 sm:h-6 rounded-full transition-all duration-200 ${
+                  showFavoritesOnly 
+                    ? 'bg-yellow-500 dark:bg-yellow-600' 
+                    : 'bg-gray-300 dark:bg-gray-600'
+                }`}>
+                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 sm:w-5 sm:h-5 bg-white rounded-full transition-transform duration-200 transform ${
+                    showFavoritesOnly ? 'translate-x-5 sm:translate-x-5' : 'translate-x-0'
+                  } shadow-md flex items-center justify-center`}>
+                    {showFavoritesOnly && (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        {/* No favorites message */}
+        {showFavoritesOnly && filteredRaids.length === 0 && (
+          <div className="text-center py-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Favorite Raids</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              You haven't marked any raids as favorites yet. Click the bookmark icon on any raid card to add it to your favorites.
+            </p>
+            <button
+              onClick={toggleShowFavoritesOnly}
+              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+            >
+              Show All Raids
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {raids.map((raid) => (
+          {filteredRaids.map((raid) => (
             <div 
               key={raid.id}
               className={`p-4 sm:p-5 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 relative overflow-hidden bg-white dark:bg-gray-800 will-change-transform ${
@@ -130,6 +244,65 @@ export default function HomePage() {
               <div className={`absolute inset-0 border border-gray-100/70 dark:border-gray-700/70 rounded-lg transition-colors duration-300 ${
                 hoveredRaid === raid.id ? 'border-blue-300/50 dark:border-blue-500/30' : ''
               }`}></div>
+              
+              {/* Preset creation button (gear) - Top left */}
+              <div className="absolute top-2 left-2 z-20">
+                <button
+                  onClick={(e) => openPresetModal(raid, e)}
+                  className="p-1.5 rounded-md transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 dark:focus:ring-offset-gray-800 bg-transparent hover:bg-white/20 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white backdrop-blur-md"
+                  aria-label="Create preset for this raid"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Favorite button - Top right */}
+              <div className="absolute top-2 right-2 z-20">
+                {/* Favorite button */}
+                <button
+                  onClick={(e) => toggleFavorite(raid.id, e)}
+                  className={`p-1.5 rounded-md transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800 ${
+                    favorites.includes(raid.id)
+                      ? 'bg-blue-500 text-white shadow-md hover:bg-blue-600' 
+                      : 'bg-black/20 dark:bg-white/10 text-white/80 hover:text-white hover:bg-black/30 dark:hover:bg-white/20 backdrop-blur-md'
+                  }`}
+                  aria-label={`${favorites.includes(raid.id) ? 'Remove from' : 'Add to'} favorites`}
+                >
+                  {favorites.includes(raid.id) ? (
+                    // Filled bookmark icon for favorites
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-3.5 w-3.5 sm:h-4 sm:w-4" 
+                      viewBox="0 0 20 20" 
+                      fill="currentColor"
+                    >
+                      <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                    </svg>
+                  ) : (
+                    // Outline bookmark icon for non-favorites
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-3.5 w-3.5 sm:h-4 sm:w-4" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor" 
+                      strokeWidth="2.5"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               
               <div className="flex flex-col items-center relative z-10">
                 {/* Raid image container */}
@@ -299,6 +472,14 @@ export default function HomePage() {
           </div>
         </div>
       )}
+
+      {/* Preset Creation Modal */}
+      <PresetCreationModal 
+        isOpen={presetModalState.isOpen}
+        onClose={closePresetModal}
+        onPresetCreated={handlePresetCreated}
+        preselectedRaid={presetModalState.selectedRaid}
+      />
     </div>
   );
 } 
