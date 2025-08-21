@@ -9,8 +9,15 @@ export default function PriceInput({
   price, 
   handlePriceChange, 
   setPrice, 
-  goldIconUrl 
+  goldIconUrl,
+  onPriceChange = null
 }) {
+  // Handle quick selection price change
+  const handleQuickSelect = (amount) => {
+    setPrice(amount);
+    onPriceChange && onPriceChange(null); // Clear active preset
+  };
+
   return (
     <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/40 dark:to-gray-700/20 p-3 sm:p-5 rounded-lg transition-all duration-300 hover:shadow-md border border-gray-200 dark:border-gray-700/50">
       <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 sm:mb-3 flex items-center">
@@ -53,7 +60,7 @@ export default function PriceInput({
                   ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md' 
                   : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
               }`}
-              onClick={() => setPrice(amount)}
+              onClick={() => handleQuickSelect(amount)}
             >
               <div className={`absolute inset-0 ${price === amount ? 'bg-blue-400/20' : 'bg-blue-500/0'} group-hover:bg-blue-500/10`}></div>
               <div className="relative z-10 flex items-center justify-center">

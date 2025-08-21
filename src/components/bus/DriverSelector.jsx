@@ -9,11 +9,28 @@ export default function DriverSelector({
   setDrivers, 
   maxDrivers, 
   buyers, 
-  handleDriverChange 
+  handleDriverChange,
+  onDriverCountChange = null
 }) {
+  // Handle decrease driver count
+  const handleDecrease = () => {
+    if (drivers > 1) {
+      setDrivers(drivers - 1);
+      onDriverCountChange && onDriverCountChange(null); // Clear active preset
+    }
+  };
+
+  // Handle increase driver count
+  const handleIncrease = () => {
+    if (drivers < maxDrivers) {
+      setDrivers(drivers + 1);
+      onDriverCountChange && onDriverCountChange(null); // Clear active preset
+    }
+  };
+
   return (
     <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/40 dark:to-gray-700/20 p-3 sm:p-5 rounded-lg transition-all duration-300 hover:shadow-md border border-gray-200 dark:border-gray-700/50">
-      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 sm:mb-3 flex items-center">
+      <label className="flex items-center text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
           <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
         </svg>
@@ -25,7 +42,7 @@ export default function DriverSelector({
         <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <button 
             className="p-2 sm:p-2.5 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/10 dark:to-blue-800/20 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800/20 dark:hover:to-blue-700/30 text-blue-600 dark:text-blue-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-50 disabled:hover:to-blue-100 dark:disabled:hover:from-blue-900/10 dark:disabled:hover:to-blue-800/20"
-            onClick={() => drivers > 1 && setDrivers(drivers - 1)}
+            onClick={handleDecrease}
             disabled={drivers <= 1}
             aria-label="Decrease drivers"
           >
@@ -44,7 +61,7 @@ export default function DriverSelector({
           
           <button 
             className="p-2 sm:p-2.5 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/10 dark:to-blue-800/20 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800/20 dark:hover:to-blue-700/30 text-blue-600 dark:text-blue-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-50 disabled:hover:to-blue-100 dark:disabled:hover:from-blue-900/10 dark:disabled:hover:to-blue-800/20"
-            onClick={() => drivers < maxDrivers && setDrivers(drivers + 1)}
+            onClick={handleIncrease}
             disabled={drivers >= maxDrivers}
             aria-label="Increase drivers"
           >

@@ -9,7 +9,7 @@ import { getOptimizedImageUrl } from '../utils/assetUtils';
 const RaidCard = React.memo(({ raid, onSelect }) => (
   <div
     onClick={() => onSelect(raid)}
-    className="p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600"
+         className="p-4 rounded-lg cursor-pointer transition-colors duration-200 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600"
   >
     <div className="flex flex-col items-center">
       <div className="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-lg overflow-hidden flex items-center justify-center mb-3">
@@ -100,27 +100,30 @@ export default React.memo(function PresetCreationModal({ isOpen, onClose, onPres
       // Prevent body scrolling when modal is open
       document.body.style.overflow = 'hidden';
       
-      // If there's a preselected raid, use it and skip to step 2
-      if (preselectedRaid) {
-        setSelectedRaid(preselectedRaid);
-        setSelectedDifficulty(preselectedRaid.difficulty);
-        setStep(2);
+      // Use transition to avoid flash when setting multiple states
+      startTransition(() => {
+        // If there's a preselected raid, use it and skip to step 2
+        if (preselectedRaid) {
+          setSelectedRaid(preselectedRaid);
+          setSelectedDifficulty(preselectedRaid.difficulty);
+          setStep(2);
+          
+          // Generate default preset name
+          const defaultName = `${preselectedRaid.name} ${preselectedRaid.difficulty} Team`;
+          setPresetName(defaultName);
+        } else {
+          setSelectedRaid(null);
+          setSelectedDifficulty('');
+          setStep(1);
+          setPresetName('');
+        }
         
-        // Generate default preset name
-        const defaultName = `${preselectedRaid.name} ${preselectedRaid.difficulty} Team`;
-        setPresetName(defaultName);
-      } else {
-        setSelectedRaid(null);
-        setSelectedDifficulty('');
-        setStep(1);
-        setPresetName('');
-      }
-      
-      setDrivers(1);
-      setPrice(5000);
-      setDriverNames(['']);
-      setIsCreating(false);
-      setDifficultyMenuOpen(false);
+        setDrivers(1);
+        setPrice(5000);
+        setDriverNames(['']);
+        setIsCreating(false);
+        setDifficultyMenuOpen(false);
+      });
     } else {
       // Restore body scrolling when modal is closed
       document.body.style.overflow = 'unset';
@@ -129,7 +132,7 @@ export default React.memo(function PresetCreationModal({ isOpen, onClose, onPres
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen, preselectedRaid]);
+  }, [isOpen, preselectedRaid, startTransition]);
 
   // Initialize driver names array when drivers count changes
   useEffect(() => {
@@ -321,16 +324,18 @@ export default React.memo(function PresetCreationModal({ isOpen, onClose, onPres
   ), [availableRaids, handleRaidSelect]);
 
   if (!isOpen) return null;
+  
+  // Don't render until state is properly initialized for preselected raids
+  if (preselectedRaid && step === 1) return null;
 
-  return createPortal(
-    <div 
-      className="fixed inset-0 bg-black/60 dark:bg-black/80 z-[9999] backdrop-blur-md flex items-center justify-center p-4"
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
-    >
-      <div 
-        ref={modalRef}
-        className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-hidden border border-gray-200 dark:border-gray-700 relative"
-      >
+     return createPortal(
+     <div 
+       className="fixed inset-0 bg-black/60 dark:bg-black/80 z-[9999] flex items-center justify-center p-4"
+     >
+             <div 
+         ref={modalRef}
+         className="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-lg max-h-[85vh] overflow-hidden border border-gray-200 dark:border-gray-700 relative"
+       >
           <div className="flex flex-col max-h-[85vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
@@ -339,7 +344,7 @@ export default React.memo(function PresetCreationModal({ isOpen, onClose, onPres
               </h2>
               <button 
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors bg-transparent border-none"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -399,12 +404,12 @@ export default React.memo(function PresetCreationModal({ isOpen, onClose, onPres
                           {selectedRaid.availableDifficulties.map((difficulty) => (
                             <button
                               key={difficulty}
-                              className={`w-full text-left px-3 py-1.5 text-xs ${
+                              className={`w-full text-left px-3 py-1.5 text-xs bg-transparent border-none rounded-none ${
                                 difficulty === selectedDifficulty
                                   ? difficulty === 'Hard'
                                     ? 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300'
                                     : 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300'
-                                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                               } transition-colors flex items-center`}
                               onClick={() => handleDifficultyChange(difficulty)}
                             >

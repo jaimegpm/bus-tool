@@ -9,7 +9,7 @@ import ResultsSummary from './bus/ResultsSummary';
 import DriverSelector from './bus/DriverSelector';
 import PriceInput from './bus/PriceInput';
 import NameInputs from './bus/NameInputs';
-// PresetTabs moved to BusConfigPage level
+// Preset functionality moved to BusConfigPage level with ConfigTabs
 
 export default function BusConfig({ 
   raid, 
@@ -184,6 +184,7 @@ export default function BusConfig({
         maxDrivers={maxDrivers}
         buyers={buyers}
         handleDriverChange={handleDriverChange}
+        onDriverCountChange={onPresetConfigChange}
       />
 
       <NameInputs 
@@ -200,6 +201,7 @@ export default function BusConfig({
         handlePriceChange={handlePriceChange}
         setPrice={setPrice}
         goldIconUrl={goldIconUrl}
+        onPriceChange={onPresetConfigChange}
       />
       
       <ResultsSummary 

@@ -94,12 +94,12 @@ export default function BusHeader({
                 {raid.availableDifficulties.map((difficulty) => (
                   <button
                     key={difficulty}
-                    className={`w-full text-left px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm ${
+                    className={`w-full text-left px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-transparent border-none rounded-none ${
                       difficulty === raid.difficulty
                         ? difficulty === 'Hard'
                           ? 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300'
                           : 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                     } transition-colors flex items-center`}
                     onClick={() => handleDifficultyChange(difficulty)}
                   >

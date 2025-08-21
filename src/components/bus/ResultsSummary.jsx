@@ -286,60 +286,9 @@ export default function ResultsSummary({
           )}
         </h3>
 
-        {/* Main stats grid */}
-        <div className="bg-white/90 dark:bg-gray-800/90 rounded-lg p-3 sm:p-5 mb-3 sm:mb-5 shadow-md">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-blue-200 dark:border-blue-800/50 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-blue-200 dark:border-blue-700">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                </svg>
-              </div>
-              <div className="flex flex-col">
-                <div className="text-xs text-blue-600 dark:text-blue-400 uppercase font-medium tracking-wider">Total Buyers</div>
-                <div className="text-xl sm:text-3xl font-bold text-blue-800 dark:text-blue-300">{buyers}</div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-yellow-200 dark:border-yellow-800/50 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-yellow-200 dark:border-yellow-700">
-                <img src={goldIconUrl} alt="Gold" className="h-5 w-5 sm:h-7 sm:w-7 object-contain" />
-              </div>
-              <div className="flex flex-col">
-                <div className="text-xs text-yellow-600 dark:text-yellow-400 uppercase font-medium tracking-wider">Price per Buyer</div>
-                <div className="text-xl sm:text-3xl font-bold text-yellow-800 dark:text-yellow-300">{formatGold(price)}</div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-green-200 dark:border-green-800/50 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-green-200 dark:border-green-700">
-                <img src={goldIconUrl} alt="Gold" className="h-5 w-5 sm:h-7 sm:w-7 object-contain" />
-              </div>
-              <div className="flex flex-col">
-                <div className="text-xs text-green-600 dark:text-green-400 uppercase font-medium tracking-wider">Total Income</div>
-                <div className="text-xl sm:text-3xl font-bold text-green-800 dark:text-green-300">{formatGold(price * buyers)}</div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-purple-200 dark:border-purple-800/50 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-purple-200 dark:border-purple-700">
-                <img src={goldIconUrl} alt="Gold" className="h-5 w-5 sm:h-7 sm:w-7 object-contain" />
-              </div>
-              <div className="flex flex-col">
-                <div className="text-xs text-purple-600 dark:text-purple-400 uppercase font-medium tracking-wider">Gold per Driver</div>
-                <div className="text-xl sm:text-3xl font-bold text-purple-800 dark:text-purple-300">{formatGold(Math.floor(price * buyers / drivers))}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
         {/* Gold distribution table */}
         {goldDistribution.length > 0 && (
-          <div className="mt-3 sm:mt-5 pt-3 sm:pt-5 border-t border-blue-200 dark:border-blue-800/30">
+          <div className="mb-3 sm:mb-5">
             <div className="flex items-center justify-between mb-2 sm:mb-3">
               <h4 className="font-semibold text-blue-800 dark:text-blue-300 flex items-center text-sm sm:text-base">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -479,6 +428,57 @@ export default function ResultsSummary({
             )}
           </div>
         )}
+        
+        {/* Main stats grid - moved to bottom */}
+        <div className="bg-white/90 dark:bg-gray-800/90 rounded-lg p-3 sm:p-5 mt-3 sm:mt-5 pt-3 sm:pt-5 border-t border-blue-200 dark:border-blue-800/30 shadow-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-blue-200 dark:border-blue-800/50 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-blue-200 dark:border-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <div className="text-xs text-blue-600 dark:text-blue-400 uppercase font-medium tracking-wider">Total Buyers</div>
+                <div className="text-xl sm:text-3xl font-bold text-blue-800 dark:text-blue-300">{buyers}</div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-yellow-200 dark:border-yellow-800/50 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-yellow-200 dark:border-yellow-700">
+                <img src={goldIconUrl} alt="Gold" className="h-5 w-5 sm:h-7 sm:w-7 object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 uppercase font-medium tracking-wider">Price per Buyer</div>
+                <div className="text-xl sm:text-3xl font-bold text-yellow-800 dark:text-yellow-300">{formatGold(price)}</div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-green-200 dark:border-green-800/50 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-green-200 dark:border-green-700">
+                <img src={goldIconUrl} alt="Gold" className="h-5 w-5 sm:h-7 sm:w-7 object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-xs text-green-600 dark:text-green-400 uppercase font-medium tracking-wider">Total Income</div>
+                <div className="text-xl sm:text-3xl font-bold text-green-800 dark:text-green-300">{formatGold(price * buyers)}</div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/30 p-3 sm:p-4 rounded-lg flex items-center space-x-3 sm:space-x-4 hover:shadow-md transition-all duration-300 border border-purple-200 dark:border-purple-800/50 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+              <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center flex-shrink-0 shadow-inner border border-purple-200 dark:border-purple-700">
+                <img src={goldIconUrl} alt="Gold" className="h-5 w-5 sm:h-7 sm:w-7 object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-xs text-purple-600 dark:text-purple-400 uppercase font-medium tracking-wider">Gold per Driver</div>
+                <div className="text-xl sm:text-3xl font-bold text-purple-800 dark:text-purple-300">{formatGold(Math.floor(price * buyers / drivers))}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { raids } from '../data/raids';
 import OptimizedImage from '../components/OptimizedImage';
 import { StorageManager } from '../utils/storage';
@@ -15,8 +16,7 @@ export default function HomePage() {
   const [hoveredRaid, setHoveredRaid] = useState(null);
   const [modalState, setModalState] = useState({
     selectedRaid: null,
-    isVisible: false,
-    position: { top: 0 }
+    isVisible: false
   });
   const [favorites, setFavorites] = useState([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -40,14 +40,9 @@ export default function HomePage() {
     if (preselectedRaidId) {
       const raid = raids.find(r => r.id === preselectedRaidId);
       if (raid && raid.availableDifficulties.length > 1) {
-        // Calcular la posición del modal
-        const scrollY = window.scrollY;
-        const viewportHeight = window.innerHeight;
-        
         setModalState({
           selectedRaid: raid,
-          isVisible: true,
-          position: { top: scrollY + viewportHeight * 0.4 }
+          isVisible: true
         });
         
         // Clear URL parameter without page reload
@@ -57,7 +52,7 @@ export default function HomePage() {
     }
   }, [location.search]);
   
-  // Handle clicks outside difficulty modal
+  // Handle clicks outside difficulty modal and body scroll
   useEffect(() => {
     function handleClickOutside(event) {
       if (difficultyModalRef.current && !difficultyModalRef.current.contains(event.target)) {
@@ -67,12 +62,15 @@ export default function HomePage() {
     
     if (modalState.isVisible) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'hidden';
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'unset';
     }
     
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'unset';
     };
   }, [modalState.isVisible]);
   
@@ -83,14 +81,9 @@ export default function HomePage() {
       return;
     }
     
-    // Calcular la posición exacta del modal y establecer todo en un solo estado
-    const scrollY = window.scrollY;
-    const viewportHeight = window.innerHeight;
-    
     setModalState({
       selectedRaid: raid,
-      isVisible: true,
-      position: { top: scrollY + viewportHeight * 0.4 }
+      isVisible: true
     });
   };
   
@@ -101,10 +94,10 @@ export default function HomePage() {
   };
   
   const closeModal = () => {
-    setModalState(prevState => ({
-      ...prevState,
+    setModalState({
+      selectedRaid: null,
       isVisible: false
-    }));
+    });
   };
 
   // Handle favorite toggle
@@ -363,19 +356,11 @@ export default function HomePage() {
       </section>
       
       {/* Difficulty selection modal - Solo se muestra cuando isVisible es true */}
-      {modalState.isVisible && modalState.selectedRaid && (
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 backdrop-blur-sm p-4">
+      {modalState.isVisible && modalState.selectedRaid && createPortal(
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-[9999] flex items-center justify-center p-4">
           <div 
             ref={difficultyModalRef}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md mx-auto"
-            style={{ 
-              position: 'absolute',
-              top: `${modalState.position.top}px`,
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-md"
           >
             {/* Modal header with raid info */}
             <div className="flex items-center mb-4 sm:mb-6">
@@ -405,7 +390,7 @@ export default function HomePage() {
               {/* Close button */}
               <button 
                 onClick={closeModal}
-                className="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors bg-transparent border-none"
                 aria-label="Close"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -470,7 +455,8 @@ export default function HomePage() {
               })}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Preset Creation Modal */}
