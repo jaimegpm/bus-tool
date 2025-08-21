@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { formatGold, getDriverColor, getBuyerPartyIndicator } from '../../utils/BusLogic';
 import html2canvas from 'html2canvas';
+import TextInstructions from './TextInstructions';
 
 /**
  * Displays a summary panel showing:
@@ -15,7 +16,11 @@ export default function ResultsSummary({
   price, 
   drivers, 
   goldIconUrl, 
-  goldDistribution
+  goldDistribution,
+  useNewMethod,
+  onMethodToggle,
+  driverNames,
+  buyerNames
 }) {
   const tableRef = useRef(null);
   const [copyStatus, setCopyStatus] = useState('');
@@ -344,7 +349,36 @@ export default function ResultsSummary({
                 Gold Distribution
               </h4>
               
-              {/* Copy table button */}
+              <div className="flex items-center space-x-3">
+                {/* Method toggle */}
+                <label className="flex items-center cursor-pointer group">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mr-2">
+                    New Method
+                  </span>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={useNewMethod}
+                      onChange={(e) => onMethodToggle(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div className={`w-10 h-5 sm:w-12 sm:h-6 rounded-full transition-all duration-200 ${
+                      useNewMethod 
+                        ? 'bg-green-500 dark:bg-green-600' 
+                        : 'bg-gray-300 dark:bg-gray-600'
+                    }`}>
+                      <div className={`absolute top-0.5 left-0.5 w-4 h-4 sm:w-5 sm:h-5 bg-white rounded-full transition-transform duration-200 transform ${
+                        useNewMethod ? 'translate-x-5 sm:translate-x-6' : 'translate-x-0'
+                      } shadow-md`}></div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                    {useNewMethod ? 'Mail' : 'Market'}
+                  </span>
+                </label>
+
+                {/* Copy table button - only show for old method */}
+                {!useNewMethod && (
               <button 
                 id="capture-button"
                 onClick={captureTable}
@@ -377,8 +411,20 @@ export default function ResultsSummary({
                    'Copy to clipboard'}
                 </span>
               </button>
+                )}
+              </div>
             </div>
             
+            {/* Show table for old method or text instructions for new method */}
+            {useNewMethod ? (
+              <div className="bg-white/90 dark:bg-gray-800/90 rounded-lg p-2 sm:p-4 shadow-md">
+                <TextInstructions 
+                  goldDistribution={goldDistribution}
+                  driverNames={driverNames}
+                  buyerNames={buyerNames}
+                />
+              </div>
+            ) : (
             <div ref={tableRef} className="bg-white/90 dark:bg-gray-800/90 rounded-lg p-2 sm:p-4 shadow-md">
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
@@ -430,6 +476,7 @@ export default function ResultsSummary({
                 </table>
               </div>
             </div>
+            )}
           </div>
         )}
       </div>

@@ -135,7 +135,9 @@ export default function MainLayout({ children }) {
               <p className="mt-1">Created for the Lost Ark community</p>
               <div className="mt-3 flex justify-center space-x-4">
                 <a 
-                  href="#" 
+                  href="https://discord.gg/buseuc" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                   aria-label="Discord"
                 >
@@ -144,7 +146,9 @@ export default function MainLayout({ children }) {
                   </svg>
                 </a>
                 <a 
-                  href="#" 
+                  href="https://www.youtube.com/@SuicideLOA" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                   aria-label="YouTube"
                 >

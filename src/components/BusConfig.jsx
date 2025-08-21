@@ -8,6 +8,7 @@ import { calculateGoldDistribution, formatGold, getDriverColor, getBuyerPartyInd
 import ResultsSummary from './bus/ResultsSummary';
 import DriverSelector from './bus/DriverSelector';
 import PriceInput from './bus/PriceInput';
+import NameInputs from './bus/NameInputs';
 
 export default function BusConfig({ raid, onConfigChange }) {
   // State management
@@ -17,12 +18,32 @@ export default function BusConfig({ raid, onConfigChange }) {
   const [isCalculating, setIsCalculating] = useState(false);
   const [animateResult, setAnimateResult] = useState(false);
   const [goldDistribution, setGoldDistribution] = useState([]);
+  const [useNewMethod, setUseNewMethod] = useState(true);
+  const [driverNames, setDriverNames] = useState([]);
+  const [buyerNames, setBuyerNames] = useState([]);
   
   const goldIconUrl = getOptimizedImageUrl('images/icons/gold.webp', 'sm', true);
   
   // Calculate max drivers and buyers
   const maxDrivers = raid ? raid.totalPlayers - 1 : 0;
   const buyers = raid ? raid.totalPlayers - drivers : 0;
+
+  /**
+   * Initialize name arrays when driver/buyer count changes
+   */
+  useEffect(() => {
+    setDriverNames(prev => {
+      const newNames = [...prev];
+      while (newNames.length < drivers) newNames.push('');
+      return newNames.slice(0, drivers);
+    });
+    
+    setBuyerNames(prev => {
+      const newNames = [...prev];
+      while (newNames.length < buyers) newNames.push('');
+      return newNames.slice(0, buyers);
+    });
+  }, [drivers, buyers]);
   
   /**
    * Handles gold distribution calculations when raid, drivers or price changes
@@ -124,6 +145,15 @@ export default function BusConfig({ raid, onConfigChange }) {
             handleDriverChange={handleDriverChange}
           />
           
+          <NameInputs 
+            drivers={drivers}
+            buyers={buyers}
+            driverNames={driverNames}
+            buyerNames={buyerNames}
+            onDriverNameChange={setDriverNames}
+            onBuyerNameChange={setBuyerNames}
+          />
+          
           <PriceInput 
             price={price}
             handlePriceChange={handlePriceChange}
@@ -139,6 +169,10 @@ export default function BusConfig({ raid, onConfigChange }) {
             drivers={drivers}
             goldIconUrl={goldIconUrl}
             goldDistribution={goldDistribution}
+            useNewMethod={useNewMethod}
+            onMethodToggle={setUseNewMethod}
+            driverNames={driverNames}
+            buyerNames={buyerNames}
           />
         </div>
       </div>
