@@ -266,8 +266,8 @@ export default function HomePage() {
                   onClick={(e) => toggleFavorite(raid.id, e)}
                   className={`p-1.5 rounded-md transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800 ${
                     favorites.includes(raid.id)
-                      ? 'bg-blue-500 text-white shadow-md hover:bg-blue-600' 
-                      : 'bg-black/20 dark:bg-white/10 text-white/80 hover:text-white hover:bg-black/30 dark:hover:bg-white/20 backdrop-blur-md'
+                      ? 'bg-transparent text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300' 
+                      : 'bg-transparent hover:bg-white/20 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white backdrop-blur-md'
                   }`}
                   aria-label={`${favorites.includes(raid.id) ? 'Remove from' : 'Add to'} favorites`}
                 >
@@ -330,25 +330,27 @@ export default function HomePage() {
                 
                 {/* Raid details */}
                 <div className="flex items-center mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                  <span className="mr-3">{raid.totalPlayers} players</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    raid.difficulty === 'Hard' 
-                      ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' 
-                      : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                  }`}>
-                    {raid.difficulty}
-                  </span>
+                  <span>{raid.totalPlayers} players</span>
                 </div>
                 
-                {/* Multiple difficulties indicator */}
-                {raid.availableDifficulties.length > 1 && (
-                  <div className="mt-2 text-xs text-blue-600 dark:text-blue-400 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
-                    </svg>
-                    Multiple difficulties
-                  </div>
-                )}
+                {/* Difficulty availability indicator */}
+                <div className="mt-2 text-xs flex items-center">
+                  {raid.availableDifficulties.length > 1 ? (
+                    <div className="text-blue-600 dark:text-blue-400 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+                      </svg>
+                      Multiple difficulties
+                    </div>
+                  ) : (
+                    <div className="text-blue-600 dark:text-blue-400 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <circle cx="10" cy="10" r="6" />
+                      </svg>
+                      Only one difficulty
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
